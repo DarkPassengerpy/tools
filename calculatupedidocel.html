@@ -10,24 +10,13 @@
     input, select, button { width: 100%; padding: 12px; margin: 6px 0; font-size: 16px; border-radius: 8px; box-sizing: border-box; }
     button.agregar-persona, button.agregar-producto, button.asignar-pedido { background: #1976d2; color: #fff; border: none; }
 
+    /* 🔹 Único cambio: color del botón copiar */
     .btn-copiar { background: #183f57; color: #fff; border: none; }
-	.btn-borrar {
-	  background: #d32f2f;
-	  color: #fff;
-	  border: none;
-	  width: auto;        /* 🔹 ocupa solo lo necesario */
-	  padding: 8px 14px;  /* 🔹 espacio interno */
-	  border-radius: 8px;
-	  display: block;     /* 🔹 permite centrar */
-	  margin: 20px auto;  /* 🔹 centrado horizontal */
-	  text-align: center;
-}
 
-
-    /* 🔹 Bloques al 40% con borde blanco */
-    .bloque { width: 40%; margin: 15px auto; padding: 12px; border-radius: 8px; background: #1e1e1e; border: 2px solid #fff; color: #fff; }
+    .btn-borrar { background: #d32f2f; color: #fff; border: none; }
+    /* 🔹 Bloques con borde blanco */
+    .bloque { margin: 15px auto; padding: 12px; border-radius: 8px; background: #1e1e1e; border: 2px solid #fff; color: #fff; }
     .bloque h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid #444; padding-bottom: 5px; }
-
     footer#teamName { text-align: center; margin-top: 20px; font-family: "Courier New", monospace; font-size: 16px; font-weight: bold; color: #6a1b9a; }
     .pedido-item { margin: 6px 0; }
     .pedido-item input { width: 60px; display:inline-block; margin-left:8px; }
@@ -165,7 +154,7 @@
     function mostrarResumen() {
       let resumenTexto = "";
 
-      resumenTexto += "👤 <u>Total por persona:</u>\n";
+      resumenTexto += "👤 Total por persona:\n";
       personas.forEach(p => {
         const pedidosPersona = pedidos.filter(x => x.persona === p);
         if (pedidosPersona.length > 0) {
@@ -173,7 +162,7 @@
         }
       });
 
-      resumenTexto += `\n🛒 <u>Total por producto:</u>\n`;
+      resumenTexto += `\n🛒 Total por producto:\n`;
       let totalGeneral = 0;
       productos.forEach(prod => {
         const total = pedidos.filter(x => x.producto === prod)
@@ -188,7 +177,7 @@
         resumenTexto += `\n🧮 Total general: ${totalGeneral}`;
       }
 
-      document.getElementById("resumen").innerHTML = resumenTexto.replace(/\n/g, "<br>");
+      document.getElementById("resumen").innerText = resumenTexto;
     }
 
     function copiarResumen() {
@@ -219,4 +208,5 @@
 
     actualizarPedidos();
   </script>
-</body
+</body>
+</html>
