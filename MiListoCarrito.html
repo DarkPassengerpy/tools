@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Compras</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 10px; font-size: 18px;
+      transition: background 0.3s, color 0.3s;
+    }
+    header { text-align: center; margin-bottom: 15px; }
+    h1 { font-size: 22px; margin: 0; }
+    #contador { font-weight: bold; font-size: 18px; margin-top: 6px; }
+    h2 { margin-top: 20px; font-size: 20px; }
+
+    input, select, button {
+      width: 100%; padding: 12px; margin: 6px 0;
+      font-size: 18px; border-radius: 8px; box-sizing: border-box;
+    }
+    ul { list-style: none; padding: 0; }
+    li {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; margin-bottom: 8px; border-radius: 8px;
+    }
+    input[type=checkbox] { width: 26px; height: 26px; }
+    li span { flex: 1; }
+    .checked span { text-decoration: line-through; color: #888; }
+
+    /* Botón de eliminar compacto y rojo */
+    .delete-btn {
+      width: 32px; height: 32px;
+      background: #f44336; color: white;
+      border: none; border-radius: 6px;
+      cursor: pointer; font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0; line-height: 1;
+    }
+
+    /* 🌞 Modo claro */
+    body.light { background: #f5f5f5; color: #333; }
+    body.light h1 { color: #2c3e50; }
+    body.light h2 { color: #1976d2; }
+    body.light input, body.light select, body.light button, body.light li {
+      background: #ffffff; border: 1px solid #ccc; color: #333;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    body.light button { background: #1976d2; color: white; border: none; }
+
+    /* 🌙 Modo oscuro */
+    body.dark { background: #121212; color: #e0e0e0; }
+    body.dark h1 { color: #ffffff; }
+    body.dark h2 { color: #90caf9; }
+    body.dark input, body.dark select, body.dark button, body.dark li {
+      background: #1e1e1e; border: 1px solid #333; color: #e0e0e0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    body.dark button { background: #1976d2; color: white; border: none; }
+    body.dark .delete-btn { background: #d32f2f; }
+  </style>
+</head>
+<body class="dark">
+  <header>
+    <h1>🛒 Mi Lista de Compras</h1>
+    <div id="contador">Pendientes: 0/0</div>
+    <button id="toggleTheme">🌞 Cambiar tema</button>
+  </header>
+
+  <input type="text" id="nuevoProducto" placeholder="Escribe un producto">
+  <select id="categoria">
+    <option value="GVO">GVO</option>
+    <option value="Casa">Casa</option>
+  </select>
+  <button id="btnAgregar">Agregar</button>
+  <button id="btnLimpiar">Limpiar lista</button>
+
+  <h2>GVO</h2>
+  <ul id="listaGVO"></ul>
+
+  <h2>Casa</h2>
+  <ul id="listaCasa"></ul>
+
+  <script>
+    const listaGVO = document.getElementById("listaGVO");
+    const listaCasa = document.getElementById("listaCasa");
+    const contador = document.getElementById("contador");
+    const toggleBtn = document.getElementById("toggleTheme");
+
+    const productosFijos = [
+      { texto: "Yogurth", categoria: "GVO" },
+      { texto: "Galletitas", categoria: "GVO" },
+      { texto: "Alfajores / barritas", categoria: "GVO" },
+      { texto: "Leche", categoria: "Casa" },
+      { texto: "Picadillo", categoria: "Casa" }
+    ];
+
+    function crearItem(texto, categoria, marcado=false) {
+      const li = document.createElement("li");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = marcado;
+      checkbox.addEventListener("change", () => {
+        li.classList.toggle("checked", checkbox.checked);
+        guardarEstado();
+      });
+      li.appendChild(checkbox);
+
+      const span = document.createElement("span");
+      span.textContent = texto;
+      li.appendChild(span);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "🗑️";
+      deleteBtn.className = "delete-btn";
+      deleteBtn.onclick = () => {
+        li.remove();
+        guardarEstado();
+      };
+      li.appendChild(deleteBtn);
+
+      if (marcado) li.classList.add("checked");
+      if (categoria === "GVO") listaGVO.appendChild(li);
+      else listaCasa.appendChild(li);
+    }
+
+    function guardarEstado() {
+      const items = [];
+      document.querySelectorAll("ul li").forEach(li => {
+        const categoria = li.parentElement.id === "listaGVO" ? "GVO" : "Casa";
+        items.push({
+          texto: li.querySelector("span").textContent,
+          marcado: li.querySelector("input").checked,
+          categoria: categoria
+        });
+      });
+      localStorage.setItem("miLista", JSON.stringify(items));
+      actualizarContador();
+    }
+
+    function cargarEstado() {
+      const items = JSON.parse(localStorage.getItem("miLista") || "[]");
+      listaGVO.innerHTML = "";
+      listaCasa.innerHTML = "";
+      if (items.length === 0) {
+        productosFijos.forEach(item => crearItem(item.texto, item.categoria));
+      } else {
+        items.forEach(item => crearItem(item.texto, item.categoria, item.marcado));
+      }
+      actualizarContador();
+    }
+
+    function agregarProducto() {
+      const texto = document.getElementById("nuevoProducto").value.trim();
+      const categoria = document.getElementById("categoria").value;
+      if (texto) {
+        crearItem(texto, categoria);
+        document.getElementById("nuevoProducto").value = "";
+        guardarEstado();
+      }
+    }
+
+    function limpiarLista() {
+      localStorage.removeItem("miLista");
+      listaGVO.innerHTML = "";
+      listaCasa.innerHTML = "";
+      productosFijos.forEach(item => crearItem(item.texto, item.categoria));
+      guardarEstado();
+    }
+
+    function actualizarContador() {
+      const total = document.querySelectorAll("input[type=checkbox]").length;
+      const marcados = document.querySelectorAll("input[type=checkbox]:checked").length;
+      const pendientes = total - marcados;
+      contador.textContent = `Pendientes: ${pendientes} / ${total}`;
+      contador.style.color = pendientes === 0 ? "#4caf50" : "#f44336";
+    }
+
+    document.getElementById("btnAgregar").onclick = agregarProducto;
+    document.getElementById("btnLimpiar").onclick = limpiarLista;
+
+    toggleBtn.onclick = () => {
+      document.body.classList.toggle("dark");
+      document.body.classList.toggle("light");
+      toggleBtn.textContent = document.body.classList.contains("dark") ? "🌞 Cambiar tema" : "🌙 Cambiar tema";
+      localStorage.setItem("temaLista", document.body.classList.contains("dark") ? "dark" : "light");
+    };
+
+    const temaGuardado = localStorage.getItem("temaLista");
+    if (temaGuardado) {
+      document.body.classList.remove("light","dark");
+      document.body.classList.add(temaGuardado);
+      toggleBtn.textContent = temaGuardado === "dark" ? "🌞 Cambiar tema" : "🌙 Cambiar tema";
+    }
+
+    cargarEstado();
+  </script>
+</body>
+</html>
