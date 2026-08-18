@@ -124,6 +124,46 @@
     .delete-btn:hover {
       background: #d32f2f;   /* rojo más oscuro */
     }
+
+    /* Estilos para resumen de saldos */
+    .resumen-saldos {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e8f5e9;
+      border-radius: 8px;
+      border-left: 4px solid #4caf50;
+    }
+
+    .resumen-saldos h3 {
+      color: #2e7d32;
+      margin-top: 0;
+    }
+
+    .saldo-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #c8e6c9;
+    }
+
+    .saldo-item:last-child {
+      border-bottom: none;
+    }
+
+    .saldo-positivo {
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    .saldo-negativo {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+
+    .saldo-neutro {
+      color: #666;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -234,7 +274,40 @@
       // 📌 Agregar total gastado
       resultados += `<br><strong>Total gastado:</strong> ${formatearNumero(total)}`;
 
+      // 📌 Agregar resumen de saldos netos
+      resultados += crearResumenSaldos();
+
       document.getElementById("resultados").innerHTML = resultados;
+    }
+
+    function crearResumenSaldos() {
+      const total = personas.reduce((sum, p) => sum + p.pago, 0);
+      const promedio = total / personas.length;
+
+      let html = '<div class="resumen-saldos"><h3>💰 Saldo Final por Persona:</h3>';
+
+      personas.forEach(p => {
+        const saldoNeto = p.pago - promedio;
+        let claseCSS = 'saldo-neutro';
+        let simbolo = '○';
+
+        if (saldoNeto > 0) {
+          claseCSS = 'saldo-positivo';
+          simbolo = '✓';
+        } else if (saldoNeto < 0) {
+          claseCSS = 'saldo-negativo';
+          simbolo = '✗';
+        }
+
+        html += `
+          <div class="saldo-item">
+            <span>${simbolo} ${p.nombre}</span>
+            <span class="${claseCSS}">${saldoNeto > 0 ? '+' : ''}${formatearNumero(saldoNeto)}</span>
+          </div>`;
+      });
+
+      html += '</div>';
+      return html;
     }
 
     function limpiarTodo() {
@@ -256,4 +329,4 @@
     }
   </script>
 </body>
-</
+</html>
