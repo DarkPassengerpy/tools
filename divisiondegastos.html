@@ -212,8 +212,13 @@
       color: #666;
     }
 
-    .transf-item {
+    .transf-item-paga {
       color: #d32f2f;
+      font-size: 12px;
+    }
+
+    .transf-item-recibe {
+      color: #2e7d32;
       font-size: 12px;
     }
   </style>
@@ -339,38 +344,39 @@
       resultados += `<br><strong>Total gastado:</strong> ${formatearNumero(Math.abs(total))}`;
 
       // 📌 Agregar resumen de saldos netos con desglose de transferencias
-      resultados += crearResumenSaldos(promedio, transferencias);
+      resultados += crearResumenSaldos(transferencias);
 
       document.getElementById("resultados").innerHTML = resultados;
     }
 
-    function crearResumenSaldos(promedio, transferencias) {
+    function crearResumenSaldos(transferencias) {
       let html = '<div class="resumen-saldos"><h3>💰 Saldo Final por Persona:</h3>';
 
       personas.forEach(p => {
         let claseCSS = 'saldo-neutro';
         let simbolo = '○';
-        let saldoNeto = p.pago;
+        let saldoNeto = p.pago; // Comienza con el gasto (negativo)
         let desglose = `<div class="saldo-desglose">`;
 
         // Mostrar pago inicial (con el signo negativo para los cálculos)
         desglose += `<div class="saldo-linea"><span>Gasto:</span> <span>${formatearNumero(p.pago)}</span></div>`;
 
         // Mostrar las transferencias de esta persona
-        let total_transferencias = 0;
+        let operacion = `${formatearNumero(p.pago)}`;
+        
         transferencias.forEach(t => {
           if (t.de === p.nombre) {
-            // Esta persona debe pagar
-            desglose += `<div><span>Le debe dar a ${t.hacia}:</span> <span class="transf-item">-${formatearNumero(t.monto)}</span></div>`;
-            total_transferencias -= t.monto;
+            // Esta persona debe pagar (resta)
+            desglose += `<div><span>Le debe dar a ${t.hacia}:</span> <span class="transf-item-paga">-${formatearNumero(t.monto)}</span></div>`;
+            saldoNeto -= t.monto;
+            operacion += ` - ${formatearNumero(t.monto)}`;
           } else if (t.hacia === p.nombre) {
-            // Esta persona debe recibir
-            desglose += `<div><span>Recibe de ${t.de}:</span> <span style="color: #2e7d32;">+${formatearNumero(t.monto)}</span></div>`;
-            total_transferencias += t.monto;
+            // Esta persona debe recibir (suma)
+            desglose += `<div><span>Recibe de ${t.de}:</span> <span class="transf-item-recibe">+${formatearNumero(t.monto)}</span></div>`;
+            saldoNeto += t.monto;
+            operacion += ` + ${formatearNumero(t.monto)}`;
           }
         });
-
-        saldoNeto = p.pago + total_transferencias;
 
         if (saldoNeto > 0) {
           claseCSS = 'saldo-positivo';
@@ -387,7 +393,7 @@
             <div class="saldo-persona">${simbolo} ${p.nombre}</div>
             ${desglose}
             <div class="saldo-operacion">
-              ${formatearNumero(p.pago)}${total_transferencias >= 0 ? '+' : ''}${formatearNumero(total_transferencias)} = ${formatearNumero(saldoNeto)}
+              ${operacion} = ${formatearNumero(saldoNeto)}
             </div>
             <div class="saldo-resultado">
               <span>Saldo final:</span>
