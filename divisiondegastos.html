@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Balance de Gastos</title>
+  <title>Divisor de Gastos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -140,7 +140,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Balance de Gastos</h1>
+    <h1>Divisor de Gastos</h1>
 
     <input type="text" id="nombre" placeholder="Nombre">
     <input type="number" id="pago" placeholder="Gasto realizado (ej: 1000)">
@@ -260,7 +260,7 @@
       resultados += crearResumenSaldos(transferencias, promedio);
 
       // --- CONSTRUCCIÓN DEL TEXTO PARA COMPARTIR ---
-      textoParaCompartir = `📊 *Balance de Gastos*\n\n`;
+      textoParaCompartir = `📊 *Divisor de Gastos*\n\n`;
       textoParaCompartir += `💰 *Total gastado:* ${formatearNumero(total)}\n`;
       textoParaCompartir += `🎯 *Cuota por persona:* ${formatearNumero(promedio)}\n\n`;
       
