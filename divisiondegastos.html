@@ -16,25 +16,29 @@
     .container {
       max-width: 500px;
       margin: auto;
-      background: #fff;
+      background: #262626;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
       text-align: center;
+      color: #e0e0e0;
     }
 
-    h1 { color: #a60000; }
+    h1 { color: #ff5252; }
 
     input {
       font-family: "Aptos", Arial, sans-serif;
       padding: 10px;
       margin: 8px 0;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid #444;
+      background: #1e1e1e;
+      color: #fff;
       width: 100%;
       box-sizing: border-box;
       text-align: center;
     }
+    input::placeholder { color: #888; }
 
     button {
       background: #1976d2; border: none; cursor: pointer;
@@ -53,6 +57,7 @@
       font-weight: bold;
       font-size: 15px;
       margin-bottom: 15px;
+      color: #fff;
     }
     #btn-compartir:hover { background: #128c7e; }
 
@@ -64,7 +69,7 @@
     .slider {
       position: absolute; cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc; transition: .4s;
+      background-color: #444; transition: .4s;
       border-radius: 24px;
     }
     .slider:before {
@@ -77,11 +82,12 @@
 
     #resultados {
       margin-top: 20px; padding: 15px;
-      background: #fafafa; border-radius: 8px; text-align: left;
+      background: #1e1e1e; border-radius: 8px; text-align: left;
+      color: #e0e0e0;
     }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; color: #e0e0e0; }
+    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #444; color: #e0e0e0; }
     td:last-child { text-align: right; }
 
     .delete-btn {
@@ -93,31 +99,32 @@
     .delete-btn:hover { background: #d32f2f; }
 
     .resumen-saldos {
-      margin-top: 20px; padding: 15px; background: #e8f5e9;
-      border-radius: 8px; border-left: 4px solid #4caf50;
+      margin-top: 20px; padding: 15px; background: #1a2e1b;
+      border-radius: 8px; border-left: 4px solid #4caf50; color: #e0e0e0;
     }
-    .resumen-saldos h3 { color: #2e7d32; margin-top: 0; margin-bottom: 15px; }
+    .resumen-saldos h3 { color: #81c784; margin-top: 0; margin-bottom: 15px; }
     .saldo-item {
-      margin-bottom: 15px; padding: 12px; background: #f1f8f6;
+      margin-bottom: 15px; padding: 12px; background: #223825;
       border-radius: 6px; border-left: 3px solid #4caf50;
     }
-    .saldo-persona { font-weight: bold; color: #1976d2; margin-bottom: 12px; font-size: 16px; }
-    .saldo-desglose { font-size: 13px; color: #555; line-height: 1.8; margin-bottom: 12px; background: #fff; padding: 10px; border-radius: 4px; }
+    .saldo-persona { font-weight: bold; color: #64b5f6; margin-bottom: 12px; font-size: 16px; }
+    .saldo-desglose { font-size: 13px; color: #ccc; line-height: 1.8; margin-bottom: 12px; background: #1e1e1e; padding: 10px; border-radius: 4px; }
     .saldo-desglose div { display: flex; justify-content: space-between; align-items: center; }
-    .saldo-linea { border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 8px; }
+    .saldo-linea { border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 8px; }
     .saldo-operacion {
-      background: #fff; padding: 10px; border-radius: 4px;
+      background: #1e1e1e; padding: 10px; border-radius: 4px;
       font-family: monospace; text-align: center; font-size: 13px;
-      color: #333; font-weight: bold; margin: 10px 0; border: 1px solid #c8e6c9;
+      color: #fff; font-weight: bold; margin: 10px 0; border: 1px solid #2e7d32;
     }
     .saldo-resultado {
       display: flex; justify-content: space-between; align-items: center;
       padding-top: 8px; border-top: 2px solid #4caf50; font-weight: bold; font-size: 14px;
+      color: #e0e0e0;
     }
-    .saldo-negativo { color: #d32f2f; }
-    .transf-item-paga { color: #d32f2f; font-weight: bold; }
-    .transf-item-recibe { color: #2e7d32; font-weight: bold; }
-    .validacion-ok { text-align: center; font-weight: bold; color: #2e7d32; margin-top: 15px; padding: 10px; background: #c8e6c9; border-radius: 6px; }
+    .saldo-negativo { color: #ef5350; }
+    .transf-item-paga { color: #ef5350; font-weight: bold; }
+    .transf-item-recibe { color: #81c784; font-weight: bold; }
+    .validacion-ok { text-align: center; font-weight: bold; color: #81c784; margin-top: 15px; padding: 10px; background: #1a2e1b; border-radius: 6px; }
 
     footer#teamName {
       text-align: center;
