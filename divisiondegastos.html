@@ -22,6 +22,7 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.4);
       text-align: center;
       color: #e0e0e0;
+      box-sizing: border-box;
     }
 
     h1 { color: #ff5252; }
@@ -39,6 +40,16 @@
       text-align: center;
     }
     input::placeholder { color: #888; }
+
+    /* 🔹 Ocultar flechitas de incremento/decremento en inputs numéricos */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
 
     button {
       background: #1976d2; border: none; cursor: pointer;
@@ -126,6 +137,33 @@
     .transf-item-recibe { color: #81c784; font-weight: bold; }
     .validacion-ok { text-align: center; font-weight: bold; color: #81c784; margin-top: 15px; padding: 10px; background: #1a2e1b; border-radius: 6px; }
 
+    /* 🔹 Bloque de información idéntico al contenedor principal */
+    .bloque {
+      max-width: 500px;
+      width: 100%;
+      margin: 15px auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: #262626;
+      box-sizing: border-box;
+      text-align: left;
+      color: #e0e0e0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .bloque h2 {
+      margin-top: 0;
+      font-size: 18px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+      color: #ff5252;
+    }
+    .bloque p {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 8px 0 0;
+      color: #ccc;
+    }
+
     footer#teamName {
       text-align: center;
       margin-top: 30px;
@@ -162,6 +200,11 @@
     </div>
 
     <div id="resultados"></div>
+  </div>
+
+  <div class="bloque">
+    <h2>ℹ️ ¿Qué es "Divisor de Gastos"?</h2>
+    <p>Es una herramienta web Divisor de Gastos diseñada para simplificar y automatizar el reparto de dinero entre grupos (amigos, familia o compañeros) cuando realizan actividades o viajes con gastos compartidos.</p>
   </div>
 
   <footer id="teamName">Dark Passenger</footer>
