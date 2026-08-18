@@ -137,32 +137,62 @@
     .resumen-saldos h3 {
       color: #2e7d32;
       margin-top: 0;
+      margin-bottom: 15px;
     }
 
     .saldo-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #c8e6c9;
+      margin-bottom: 15px;
+      padding: 12px;
+      background: #f1f8f6;
+      border-radius: 6px;
+      border-left: 3px solid #4caf50;
     }
 
-    .saldo-item:last-child {
-      border-bottom: none;
+    .saldo-persona {
+      font-weight: bold;
+      color: #1976d2;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .saldo-calculo {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .saldo-operacion {
+      background: #fff;
+      padding: 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      text-align: center;
+      font-size: 12px;
+      color: #333;
+      margin: 6px 0;
+    }
+
+    .saldo-resultado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid #c8e6c9;
+      font-weight: bold;
+      font-size: 14px;
     }
 
     .saldo-positivo {
       color: #2e7d32;
-      font-weight: bold;
     }
 
     .saldo-negativo {
       color: #d32f2f;
-      font-weight: bold;
     }
 
     .saldo-neutro {
       color: #666;
-      font-weight: bold;
     }
   </style>
 </head>
@@ -273,17 +303,15 @@
 
       // 📌 Agregar total gastado
       resultados += `<br><strong>Total gastado:</strong> ${formatearNumero(total)}`;
+      resultados += `<br><strong>Promedio por persona:</strong> ${formatearNumero(promedio)}`;
 
-      // 📌 Agregar resumen de saldos netos
-      resultados += crearResumenSaldos();
+      // 📌 Agregar resumen de saldos netos con desglose
+      resultados += crearResumenSaldos(promedio);
 
       document.getElementById("resultados").innerHTML = resultados;
     }
 
-    function crearResumenSaldos() {
-      const total = personas.reduce((sum, p) => sum + p.pago, 0);
-      const promedio = total / personas.length;
-
+    function crearResumenSaldos(promedio) {
       let html = '<div class="resumen-saldos"><h3>💰 Saldo Final por Persona:</h3>';
 
       personas.forEach(p => {
@@ -301,8 +329,18 @@
 
         html += `
           <div class="saldo-item">
-            <span>${simbolo} ${p.nombre}</span>
-            <span class="${claseCSS}">${saldoNeto > 0 ? '+' : ''}${formatearNumero(saldoNeto)}</span>
+            <div class="saldo-persona">${simbolo} ${p.nombre}</div>
+            <div class="saldo-calculo">
+              Lo que pagó: <strong>${formatearNumero(p.pago)}</strong><br>
+              Menos su parte: <strong>-${formatearNumero(promedio)}</strong>
+            </div>
+            <div class="saldo-operacion">
+              ${formatearNumero(p.pago)} - ${formatearNumero(promedio)} = ${formatearNumero(saldoNeto)}
+            </div>
+            <div class="saldo-resultado">
+              <span>Saldo final:</span>
+              <span class="${claseCSS}">${saldoNeto > 0 ? '+' : ''}${formatearNumero(saldoNeto)}</span>
+            </div>
           </div>`;
       });
 
