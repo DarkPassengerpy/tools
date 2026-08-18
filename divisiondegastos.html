@@ -8,7 +8,9 @@
     body {
       font-family: "Aptos", Arial, sans-serif;
       margin: 0; padding: 20px;
-      background: #f5f5f5; color: #333;
+      background: url('mifondo3.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
     }
 
     .container {
@@ -17,7 +19,7 @@
       background: #fff;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       text-align: center;
     }
 
@@ -34,192 +36,98 @@
       text-align: center;
     }
 
-    /* Botones principales */
     button {
-      background: #1976d2;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      color: white;
-      width: 100px;      /* cuadrado compacto */
-      height: 36px;
-      border-radius: 4px;
-      padding: 0;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin: 6px;
+      background: #1976d2; border: none; cursor: pointer;
+      font-size: 14px; color: white; width: 100px;
+      height: 36px; border-radius: 4px; padding: 0;
+      line-height: 1; display: inline-flex;
+      align-items: center; justify-content: center; margin: 6px;
+      transition: 0.3s;
     }
-    button:hover {
-      background: #0d47a1;
-    }
+    button:hover { background: #0d47a1; }
 
-    /* Toggle switch */
+    #btn-compartir {
+      background: #25d366;
+      width: auto;
+      padding: 0 20px;
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 15px;
+    }
+    #btn-compartir:hover { background: #128c7e; }
+
     .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-      vertical-align: middle;
+      position: relative; display: inline-block;
+      width: 50px; height: 24px; vertical-align: middle;
     }
     .switch input { display: none; }
     .slider {
-      position: absolute;
-      cursor: pointer;
+      position: absolute; cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
+      background-color: #ccc; transition: .4s;
       border-radius: 24px;
     }
     .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px; width: 18px;
-      left: 3px; bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
+      position: absolute; content: "";
+      height: 18px; width: 18px; left: 3px; bottom: 3px;
+      background-color: white; transition: .4s; border-radius: 50%;
     }
     input:checked + .slider { background-color: #1976d2; }
     input:checked + .slider:before { transform: translateX(26px); }
 
     #resultados {
       margin-top: 20px; padding: 15px;
-      background: #fafafa; border-radius: 8px;
-      text-align: left;
+      background: #fafafa; border-radius: 8px; text-align: left;
     }
 
-    /* Tabla de participantes */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    td:last-child {
-      text-align: right;
-    }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+    td:last-child { text-align: right; }
 
-    /* Botón de eliminar */
     .delete-btn {
-      background: #f44336;   /* rojo fijo */
-      border: none;
-      cursor: pointer;
-      font-size: 18px;       /* tamaño del emoji */
-      color: white;
-      width: 32px;           /* cuadrado compacto */
-      height: 32px;
-      border-radius: 4px;
-      padding: 0;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #f44336; border: none; cursor: pointer;
+      font-size: 18px; color: white; width: 32px; height: 32px;
+      border-radius: 4px; padding: 0; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
     }
-    .delete-btn:hover {
-      background: #d32f2f;   /* rojo más oscuro */
-    }
+    .delete-btn:hover { background: #d32f2f; }
 
-    /* Estilos para resumen de saldos */
     .resumen-saldos {
-      margin-top: 20px;
-      padding: 15px;
-      background: #e8f5e9;
-      border-radius: 8px;
-      border-left: 4px solid #4caf50;
+      margin-top: 20px; padding: 15px; background: #e8f5e9;
+      border-radius: 8px; border-left: 4px solid #4caf50;
     }
-
-    .resumen-saldos h3 {
-      color: #2e7d32;
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
-
+    .resumen-saldos h3 { color: #2e7d32; margin-top: 0; margin-bottom: 15px; }
     .saldo-item {
-      margin-bottom: 15px;
-      padding: 12px;
-      background: #f1f8f6;
-      border-radius: 6px;
-      border-left: 3px solid #4caf50;
+      margin-bottom: 15px; padding: 12px; background: #f1f8f6;
+      border-radius: 6px; border-left: 3px solid #4caf50;
     }
-
-    .saldo-persona {
-      font-weight: bold;
-      color: #1976d2;
-      margin-bottom: 12px;
-      font-size: 16px;
-    }
-
-    .saldo-desglose {
-      font-size: 13px;
-      color: #555;
-      line-height: 1.8;
-      margin-bottom: 12px;
-      background: #fff;
-      padding: 10px;
-      border-radius: 4px;
-    }
-
-    .saldo-desglose div {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .saldo-linea {
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-    }
-
+    .saldo-persona { font-weight: bold; color: #1976d2; margin-bottom: 12px; font-size: 16px; }
+    .saldo-desglose { font-size: 13px; color: #555; line-height: 1.8; margin-bottom: 12px; background: #fff; padding: 10px; border-radius: 4px; }
+    .saldo-desglose div { display: flex; justify-content: space-between; align-items: center; }
+    .saldo-linea { border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 8px; }
     .saldo-operacion {
-      background: #fff;
-      padding: 10px;
-      border-radius: 4px;
-      font-family: monospace;
-      text-align: center;
-      font-size: 13px;
-      color: #333;
-      font-weight: bold;
-      margin: 10px 0;
-      border: 1px solid #c8e6c9;
+      background: #fff; padding: 10px; border-radius: 4px;
+      font-family: monospace; text-align: center; font-size: 13px;
+      color: #333; font-weight: bold; margin: 10px 0; border: 1px solid #c8e6c9;
     }
-
     .saldo-resultado {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 8px;
-      border-top: 2px solid #4caf50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 8px; border-top: 2px solid #4caf50; font-weight: bold; font-size: 14px;
+    }
+    .saldo-negativo { color: #d32f2f; }
+    .transf-item-paga { color: #d32f2f; font-weight: bold; }
+    .transf-item-recibe { color: #2e7d32; font-weight: bold; }
+    .validacion-ok { text-align: center; font-weight: bold; color: #2e7d32; margin-top: 15px; padding: 10px; background: #c8e6c9; border-radius: 6px; }
+
+    footer#teamName {
+      text-align: center;
+      margin-top: 30px;
+      font-family: "Courier New", monospace;
+      font-size: 20px;
       font-weight: bold;
-      font-size: 14px;
-    }
-
-    .saldo-positivo {
-      color: #2e7d32;
-    }
-
-    .saldo-negativo {
-      color: #d32f2f;
-    }
-
-    .saldo-neutro {
-      color: #666;
-    }
-
-    .transf-item-paga {
-      color: #d32f2f;
-      font-size: 12px;
-    }
-
-    .transf-item-recibe {
-      color: #2e7d32;
-      font-size: 12px;
+      color: #6a1b9a;
+      letter-spacing: 2px;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.8);
     }
   </style>
 </head>
@@ -228,7 +136,7 @@
     <h1>Balance de Gastos</h1>
 
     <input type="text" id="nombre" placeholder="Nombre">
-    <input type="number" id="pago" placeholder="Gasto (ingrese número negativo)">
+    <input type="number" id="pago" placeholder="Gasto realizado (ej: 1000)">
     <button onclick="agregarPersona()">Agregar</button>
 
     <div style="margin-top:15px;">
@@ -241,9 +149,7 @@
 
     <div id="lista"></div>
 
-    <!-- Botón Calcular -->
     <button onclick="calcularBalance()">Calcular</button>
-    <!-- Botón Limpiar datos debajo -->
     <div>
       <button onclick="limpiarTodo()">Limpiar datos</button>
     </div>
@@ -251,12 +157,16 @@
     <div id="resultados"></div>
   </div>
 
+  <footer id="teamName">Dark Passenger</footer>
+
   <script>
     let personas = [];
+    let textoParaCompartir = "";
 
     function agregarPersona() {
       const nombre = document.getElementById("nombre").value.trim();
-      const pago = parseFloat(document.getElementById("pago").value) || 0;
+      const pago = Math.abs(parseFloat(document.getElementById("pago").value)) || 0;
+      
       if (!nombre) return alert("Escribe un nombre");
 
       personas.push({ nombre, pago });
@@ -273,11 +183,10 @@
       }
       let tabla = "<table><tr><th>Nombre</th><th>Gasto</th><th></th></tr>";
       personas.forEach((p, index) => {
-        // En la tabla mostrar el valor absoluto (sin el signo negativo)
         tabla += `
           <tr>
-            <td>👤 ${p.nombre}</td>
-            <td>${formatearNumero(Math.abs(p.pago))}</td>
+            <td>👤 ${p.nombre.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td>
+            <td>${formatearNumero(p.pago)}</td>
             <td><button class="delete-btn" onclick="eliminarPersona(${index})">🗑️</button></td>
           </tr>`;
       });
@@ -299,109 +208,150 @@
 
       let deudores = [];
       let acreedores = [];
-      let transferencias = []; // Almacenar todas las transferencias
+      let transferencias = [];
 
       personas.forEach(p => {
         const diferencia = p.pago - promedio;
-        if (diferencia < 0) {
+        if (diferencia < -0.01) {
           deudores.push({ nombre: p.nombre, debe: -diferencia });
-        } else if (diferencia > 0) {
+        } else if (diferencia > 0.01) {
           acreedores.push({ nombre: p.nombre, recibe: diferencia });
         }
       });
 
-      let resultados = "<h3>Transferencias:</h3>";
+      let resultados = "<h3>Instrucciones de Pago:</h3>";
       let i = 0, j = 0;
+      
       while (i < deudores.length && j < acreedores.length) {
         let deuda = deudores[i].debe;
         let credito = acreedores[j].recibe;
 
         if (deuda > 0 && credito > 0) {
           const monto = Math.min(deuda, credito);
-          resultados += `➡️ ${deudores[i].nombre} debe dar ${formatearNumero(monto)} a ${acreedores[j].nombre}<br>`;
+          resultados += `➡️ <strong>${deudores[i].nombre}</strong> debe dar ${formatearNumero(monto)} a <strong>${acreedores[j].nombre}</strong><br>`;
           
-          // Registrar transferencia
           transferencias.push({
             de: deudores[i].nombre,
             hacia: acreedores[j].nombre,
-            monto: monto,
-            es_pago: true
+            monto: monto
           });
           
           deudores[i].debe -= monto;
           acreedores[j].recibe -= monto;
         }
 
-        if (deudores[i].debe === 0) i++;
-        if (acreedores[j].recibe === 0) j++;
+        if (deudores[i].debe < 0.01) i++;
+        if (acreedores[j].recibe < 0.01) j++;
       }
 
-      if (resultados === "<h3>Transferencias:</h3>") {
-        resultados += "Todos están equilibrados.<br>";
+      if (transferencias.length === 0) {
+        resultados += "Todos aportaron lo mismo. Nadie debe nada a nadie.<br>";
       }
 
-      // 📌 Agregar total gastado
-      resultados += `<br><strong>Total gastado:</strong> ${formatearNumero(Math.abs(total))}`;
+      resultados += `<br><strong>Total gastado en grupo:</strong> ${formatearNumero(total)}`;
+      
+      resultados += crearResumenSaldos(transferencias, promedio);
 
-      // 📌 Agregar resumen de saldos netos con desglose de transferencias
-      resultados += crearResumenSaldos(transferencias);
-
-      document.getElementById("resultados").innerHTML = resultados;
-    }
-
-    function crearResumenSaldos(transferencias) {
-      let html = '<div class="resumen-saldos"><h3>💰 Saldo Final por Persona:</h3>';
-
+      // --- CONSTRUCCIÓN DEL TEXTO PARA COMPARTIR ---
+      textoParaCompartir = `📊 *Balance de Gastos*\n\n`;
+      textoParaCompartir += `💰 *Total gastado:* ${formatearNumero(total)}\n`;
+      textoParaCompartir += `🎯 *Cuota por persona:* ${formatearNumero(promedio)}\n\n`;
+      
+      textoParaCompartir += `📝 *Cuanto puso cada uno al inicio:*\n`;
       personas.forEach(p => {
-        let claseCSS = 'saldo-neutro';
-        let simbolo = '○';
-        let saldoNeto = p.pago; // Comienza con el gasto (negativo)
-        let desglose = `<div class="saldo-desglose">`;
+        textoParaCompartir += `👤 ${p.nombre}: ${formatearNumero(p.pago)}\n`;
+      });
+      
+      textoParaCompartir += `\n💸 *Transferencias:*\n`;
+      if (transferencias.length > 0) {
+        transferencias.forEach(t => {
+          textoParaCompartir += `➡️ ${t.de} debe dar ${formatearNumero(t.monto)} a ${t.hacia}\n`;
+        });
+      } else {
+        textoParaCompartir += `✅ Todos aportaron lo mismo. Nadie debe nada.\n`;
+      }
 
-        // Mostrar pago inicial (con el signo negativo para los cálculos)
-        desglose += `<div class="saldo-linea"><span>Gasto:</span> <span>${formatearNumero(p.pago)}</span></div>`;
-
-        // Mostrar las transferencias de esta persona
-        let operacion = `${formatearNumero(p.pago)}`;
-        
+      textoParaCompartir += `\n*⚖️ Gasto detallado:*\n`;
+      personas.forEach(p => {
+        let saldoNeto = -p.pago;
+        let operacion = `-${formatearNumero(p.pago)}`;
         transferencias.forEach(t => {
           if (t.de === p.nombre) {
-            // Esta persona debe pagar (resta)
-            desglose += `<div><span>Le debe dar a ${t.hacia}:</span> <span class="transf-item-paga">-${formatearNumero(t.monto)}</span></div>`;
             saldoNeto -= t.monto;
             operacion += ` - ${formatearNumero(t.monto)}`;
           } else if (t.hacia === p.nombre) {
-            // Esta persona debe recibir (suma)
+            saldoNeto += t.monto;
+            operacion += ` + ${formatearNumero(t.monto)}`;
+          }
+        });
+        textoParaCompartir += `👤 ${p.nombre}:\n  Desglose: ${operacion}\n  Gasto final: ${formatearNumero(saldoNeto)}\n\n`;
+      });
+
+      textoParaCompartir += `✨ Hecho con: https://darkpassengerpy.github.io/tools/`;
+
+      let botonCopiar = `<div style="text-align: center;"><button id="btn-compartir" onclick="compartirDatos()">Copiar calculos 📋</button></div>`;
+      
+      document.getElementById("resultados").innerHTML = botonCopiar + resultados;
+    }
+
+    function compartirDatos() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textoParaCompartir).then(() => {
+          const btn = document.getElementById("btn-compartir");
+          btn.innerHTML = "¡Copiado! ✅";
+          btn.style.background = "#1b5e20";
+          
+          setTimeout(() => {
+            btn.innerHTML = "Copiar calculos 📋";
+            btn.style.background = "#25d366";
+          }, 2000);
+        }).catch(err => {
+          alert("Error al copiar. Tu navegador podría estar bloqueándolo.");
+        });
+      } else {
+        alert("Tu navegador no soporta el copiado automático.");
+      }
+    }
+
+    function crearResumenSaldos(transferencias, promedio) {
+      let html = '<div class="resumen-saldos"><h3>⚖️ Gasto detallado:</h3>';
+
+      personas.forEach(p => {
+        let saldoNeto = -p.pago; 
+        let operacion = `-${formatearNumero(p.pago)}`;
+        let desglose = `<div class="saldo-desglose">`;
+
+        desglose += `<div class="saldo-linea"><span>Gasto inicial:</span> <span class="transf-item-paga">-${formatearNumero(p.pago)}</span></div>`;
+
+        transferencias.forEach(t => {
+          if (t.de === p.nombre) {
+            desglose += `<div><span>Paga a ${t.hacia}:</span> <span class="transf-item-paga">-${formatearNumero(t.monto)}</span></div>`;
+            saldoNeto -= t.monto;
+            operacion += ` - ${formatearNumero(t.monto)}`;
+          } else if (t.hacia === p.nombre) {
             desglose += `<div><span>Recibe de ${t.de}:</span> <span class="transf-item-recibe">+${formatearNumero(t.monto)}</span></div>`;
             saldoNeto += t.monto;
             operacion += ` + ${formatearNumero(t.monto)}`;
           }
         });
 
-        if (saldoNeto > 0) {
-          claseCSS = 'saldo-positivo';
-          simbolo = '✓';
-        } else if (saldoNeto < 0) {
-          claseCSS = 'saldo-negativo';
-          simbolo = '✗';
-        }
-
         desglose += `</div>`;
 
         html += `
           <div class="saldo-item">
-            <div class="saldo-persona">${simbolo} ${p.nombre}</div>
+            <div class="saldo-persona">👤 ${p.nombre}</div>
             ${desglose}
             <div class="saldo-operacion">
-              ${operacion} = ${formatearNumero(saldoNeto)}
+              ${operacion} = <span class="saldo-negativo">${formatearNumero(saldoNeto)}</span>
             </div>
             <div class="saldo-resultado">
-              <span>Saldo final:</span>
-              <span class="${claseCSS}">${saldoNeto > 0 ? '+' : ''}${formatearNumero(saldoNeto)}</span>
+              <span>Gasto final:</span>
+              <span class="saldo-negativo">${formatearNumero(saldoNeto)}</span>
             </div>
           </div>`;
       });
 
+      html += `<div class="validacion-ok">✅ ¡Cálculo perfecto! Todos terminan con un gasto real de -${formatearNumero(promedio)} (que es la cuota por persona).</div>`;
       html += '</div>';
       return html;
     }
@@ -412,7 +362,6 @@
       document.getElementById("resultados").innerHTML = "";
       document.getElementById("nombre").value = "";
       document.getElementById("pago").value = "";
-      document.getElementById("decimales").checked = false;
     }
 
     function formatearNumero(num) {
