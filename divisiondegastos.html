@@ -337,7 +337,6 @@
 
       // 📌 Agregar total gastado
       resultados += `<br><strong>Total gastado:</strong> ${formatearNumero(Math.abs(total))}`;
-      resultados += `<br><strong>Promedio por persona:</strong> ${formatearNumero(Math.abs(promedio))}`;
 
       // 📌 Agregar resumen de saldos netos con desglose de transferencias
       resultados += crearResumenSaldos(promedio, transferencias);
@@ -354,8 +353,8 @@
         let saldoNeto = p.pago;
         let desglose = `<div class="saldo-desglose">`;
 
-        // Mostrar pago inicial (sin el signo negativo en la tabla)
-        desglose += `<div class="saldo-linea"><span>Gasto:</span> <span>${formatearNumero(Math.abs(p.pago))}</span></div>`;
+        // Mostrar pago inicial (con el signo negativo para los cálculos)
+        desglose += `<div class="saldo-linea"><span>Gasto:</span> <span>${formatearNumero(p.pago)}</span></div>`;
 
         // Mostrar las transferencias de esta persona
         let total_transferencias = 0;
@@ -388,7 +387,7 @@
             <div class="saldo-persona">${simbolo} ${p.nombre}</div>
             ${desglose}
             <div class="saldo-operacion">
-              ${formatearNumero(Math.abs(p.pago))}${total_transferencias >= 0 ? '+' : ''}${formatearNumero(total_transferencias)} = ${formatearNumero(saldoNeto)}
+              ${formatearNumero(p.pago)}${total_transferencias >= 0 ? '+' : ''}${formatearNumero(total_transferencias)} = ${formatearNumero(saldoNeto)}
             </div>
             <div class="saldo-resultado">
               <span>Saldo final:</span>
