@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Balance de Gastos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Aptos", Arial, sans-serif;
+      margin: 0; padding: 20px;
+      background: #f5f5f5; color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 { color: #a60000; }
+
+    input {
+      font-family: "Aptos", Arial, sans-serif;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    /* Botones principales */
+    button {
+      background: #1976d2;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+      width: 100px;      /* cuadrado compacto */
+      height: 36px;
+      border-radius: 4px;
+      padding: 0;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 6px;
+    }
+    button:hover {
+      background: #0d47a1;
+    }
+
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      vertical-align: middle;
+    }
+    .switch input { display: none; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #1976d2; }
+    input:checked + .slider:before { transform: translateX(26px); }
+
+    #resultados {
+      margin-top: 20px; padding: 15px;
+      background: #fafafa; border-radius: 8px;
+      text-align: left;
+    }
+
+    /* Tabla de participantes */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    td:last-child {
+      text-align: right;
+    }
+
+    /* Botón de eliminar */
+    .delete-btn {
+      background: #f44336;   /* rojo fijo */
+      border: none;
+      cursor: pointer;
+      font-size: 18px;       /* tamaño del emoji */
+      color: white;
+      width: 32px;           /* cuadrado compacto */
+      height: 32px;
+      border-radius: 4px;
+      padding: 0;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .delete-btn:hover {
+      background: #d32f2f;   /* rojo más oscuro */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Balance de Gastos</h1>
+
+    <input type="text" id="nombre" placeholder="Nombre">
+    <input type="number" id="pago" placeholder="Pago (puede ser 0)">
+    <button onclick="agregarPersona()">Agregar</button>
+
+    <div style="margin-top:15px;">
+      <label for="decimales">Decimales:</label>
+      <label class="switch">
+        <input type="checkbox" id="decimales">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div id="lista"></div>
+
+    <!-- Botón Calcular -->
+    <button onclick="calcularBalance()">Calcular</button>
+    <!-- Botón Limpiar datos debajo -->
+    <div>
+      <button onclick="limpiarTodo()">Limpiar datos</button>
+    </div>
+
+    <div id="resultados"></div>
+  </div>
+
+  <script>
+    let personas = [];
+
+    function agregarPersona() {
+      const nombre = document.getElementById("nombre").value.trim();
+      const pago = parseFloat(document.getElementById("pago").value) || 0;
+      if (!nombre) return alert("Escribe un nombre");
+
+      personas.push({ nombre, pago });
+      mostrarLista();
+      document.getElementById("nombre").value = "";
+      document.getElementById("pago").value = "";
+    }
+
+    function mostrarLista() {
+      const listaDiv = document.getElementById("lista");
+      if (personas.length === 0) {
+        listaDiv.innerHTML = "";
+        return;
+      }
+      let tabla = "<table><tr><th>Nombre</th><th>Pago</th><th></th></tr>";
+      personas.forEach((p, index) => {
+        tabla += `
+          <tr>
+            <td>👤 ${p.nombre}</td>
+            <td>${formatearNumero(p.pago)}</td>
+            <td><button class="delete-btn" onclick="eliminarPersona(${index})">🗑️</button></td>
+          </tr>`;
+      });
+      tabla += "</table>";
+      listaDiv.innerHTML = tabla;
+    }
+
+    function eliminarPersona(index) {
+      personas.splice(index, 1);
+      mostrarLista();
+      document.getElementById("resultados").innerHTML = "";
+    }
+
+    function calcularBalance() {
+      if (personas.length === 0) return alert("Agrega al menos una persona");
+
+      const total = personas.reduce((sum, p) => sum + p.pago, 0);
+      const promedio = total / personas.length;
+
+      let deudores = [];
+      let acreedores = [];
+      personas.forEach(p => {
+        const diferencia = p.pago - promedio;
+        if (diferencia < 0) {
+          deudores.push({ nombre: p.nombre, debe: -diferencia });
+        } else if (diferencia > 0) {
+          acreedores.push({ nombre: p.nombre, recibe: diferencia });
+        }
+      });
+
+      let resultados = "<h3>Transferencias:</h3>";
+      let i = 0, j = 0;
+      while (i < deudores.length && j < acreedores.length) {
+        let deuda = deudores[i].debe;
+        let credito = acreedores[j].recibe;
+
+        if (deuda > 0 && credito > 0) {
+          const monto = Math.min(deuda, credito);
+          resultados += `➡️ ${deudores[i].nombre} debe dar ${formatearNumero(monto)} a ${acreedores[j].nombre}<br>`;
+          deudores[i].debe -= monto;
+          acreedores[j].recibe -= monto;
+        }
+
+        if (deudores[i].debe === 0) i++;
+        if (acreedores[j].recibe === 0) j++;
+      }
+
+      if (resultados === "<h3>Transferencias:</h3>") {
+        resultados += "Todos están equilibrados.<br>";
+      }
+
+      // 📌 Agregar total gastado
+      resultados += `<br><strong>Total gastado:</strong> ${formatearNumero(total)}`;
+
+      document.getElementById("resultados").innerHTML = resultados;
+    }
+
+    function limpiarTodo() {
+      personas = [];
+      document.getElementById("lista").innerHTML = "";
+      document.getElementById("resultados").innerHTML = "";
+      document.getElementById("nombre").value = "";
+      document.getElementById("pago").value = "";
+      document.getElementById("decimales").checked = false;
+    }
+
+    function formatearNumero(num) {
+      const usarDecimales = document.getElementById("decimales").checked;
+      const opciones = {
+        minimumFractionDigits: usarDecimales ? 2 : 0,
+        maximumFractionDigits: usarDecimales ? 2 : 0
+      };
+      return new Intl.NumberFormat("es-ES", opciones).format(num);
+    }
+  </script>
+</body>
+</
