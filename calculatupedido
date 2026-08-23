@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculá tu pedido</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Aptos", Arial, sans-serif;
+      margin: 0; 
+      padding: 15px; 
+      font-size: 15px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    h1 { 
+      font-size: 22px; 
+      margin: 0 0 10px 0; 
+    }
+
+    input, select {
+      font-family: "Aptos", Arial, sans-serif;
+      width: 100%; 
+      padding: 10px; 
+      margin: 6px 0; 
+      font-size: 14px; 
+      border-radius: 6px; 
+      box-sizing: border-box;
+      outline: none;
+      transition: background 0.3s, border 0.3s, color 0.3s;
+    }
+
+    button {
+      font-family: "Aptos", Arial, sans-serif;
+      width: 100%; 
+      padding: 10px; 
+      margin: 6px 0; 
+      font-size: 14px; 
+      border-radius: 6px; 
+      box-sizing: border-box;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .agregar-persona, .agregar-producto, .asignar-pedido { 
+      background: #1976d2; 
+      color: #fff; 
+    }
+    .agregar-persona:hover, .agregar-producto:hover, .asignar-pedido:hover { 
+      background: #0d47a1; 
+    }
+
+    .btn-copiar { 
+      background: #25d366; 
+      color: #fff; 
+      font-weight: bold;
+    }
+    .btn-copiar:hover { 
+      background: #128c7e; 
+    }
+
+    .btn-borrar {
+      background: #d32f2f;
+      color: #fff;
+      width: auto;
+      padding: 10px 20px;
+      border-radius: 6px;
+      display: block;
+      margin: 20px auto;
+      font-weight: bold;
+    }
+    .btn-borrar:hover {
+      background: #b71c1c;
+    }
+
+    #toggleTheme {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 12px;
+      height: auto;
+      margin-top: 5px;
+    }
+
+    /* 🔹 Bloques organizados */
+    .bloque { 
+      max-width: 500px;
+      width: 100%; 
+      margin: 15px auto; 
+      padding: 16px; 
+      border-radius: 10px; 
+      box-sizing: border-box;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s;
+    }
+    
+    .bloque h2 { 
+      margin-top: 0; 
+      font-size: 16px; 
+      border-bottom: 1px solid; 
+      padding-bottom: 5px; 
+    }
+
+    .pedido-item { 
+      margin: 8px 0; 
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+    .pedido-item input { 
+      width: 60px; 
+      margin: 0; 
+      padding: 6px; 
+      text-align: center;
+    }
+
+    .delete-persona { 
+      background: #d32f2f; 
+      color: #fff; 
+      border: none; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      padding: 6px 10px; 
+      margin-top: 8px; 
+      font-size: 13px;
+      width: auto;
+    }
+    .delete-persona:hover { background: #b71c1c; }
+
+    /* --- TEMA CLARO --- */
+    body.light {
+      background: #f5f5f5;
+      color: #333;
+    }
+    body.light h1 {
+      color: #1976d2;
+    }
+    body.light .bloque {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      color: #333;
+    }
+    body.light .bloque h2 {
+      color: #1976d2;
+      border-bottom-color: #eee;
+    }
+    body.light input, body.light select {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      color: #333;
+    }
+    body.light #toggleTheme {
+      background: #e0e0e0;
+      color: #333;
+    }
+    body.light #toggleTheme:hover {
+      background: #d0d0d0;
+    }
+
+    /* --- TEMA OSCURO (Por defecto) --- */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+    body.dark h1 {
+      color: #ff5252;
+    }
+    body.dark .bloque {
+      background: #262626;
+      border: 1px solid #444;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      color: #e0e0e0;
+    }
+    body.dark .bloque h2 {
+      color: #81c784;
+      border-bottom-color: #444;
+    }
+    body.dark input, body.dark select {
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #fff;
+    }
+    body.dark #toggleTheme {
+      background: #333;
+      color: #fff;
+    }
+    body.dark #toggleTheme:hover {
+      background: #444;
+    }
+
+    footer#teamName { 
+      text-align: center; 
+      margin-top: 30px; 
+      font-family: "Courier New", monospace; 
+      font-size: 20px; 
+      font-weight: bold; 
+      color: #6a1b9a; 
+      letter-spacing: 2px;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.8);
+    }
+  </style>
+</head>
+<body class="dark">
+
+  <header>
+    <h1>📝 Calculá tu pedido</h1>
+    <div style="margin-bottom: 8px;">
+      <span style="color:#81c784; cursor:pointer; font-weight:bold; font-size:13px;"
+            onclick="window.location.href='calculatupedidocel.html'">
+        📱 Cambiar vista a Móvil
+      </span>
+    </div>
+    <button id="toggleTheme">🌞 Tema Claro</button>
+  </header>
+
+  <div class="bloque">
+    <h2>👥 Personas</h2>
+    <input type="text" id="nombrePersona" placeholder="Nombre">
+    <button class="agregar-persona" onclick="agregarPersona()">Agregar Persona</button>
+  </div>
+
+  <div class="bloque">
+    <h2>🛒 Productos</h2>
+    <input type="text" id="nombreProducto" placeholder="Producto">
+    <button class="agregar-producto" onclick="agregarProducto()">Agregar Producto</button>
+  </div>
+
+  <div class="bloque">
+    <h2>📌 Pedidos</h2>
+    <div id="pedidos"></div>
+  </div>
+
+  <div class="bloque">
+    <h2>📊 Resumen</h2>
+    <button class="btn-copiar" onclick="copiarResumen()">📋 Copiar resumen</button>
+    <div id="resumen" style="margin-top: 10px; line-height: 1.5;"></div>
+  </div>
+
+  <button class="btn-borrar" onclick="borrarTodo()">🗑️ Borrar datos</button>
+
+  <div class="bloque">
+    <h2>ℹ️ ¿Qué es "Calculá tu pedido"?</h2>
+    <p style="margin: 5px 0 0 0; font-size: 13px; opacity: 0.9;">"Calculá tu pedido" es una herramienta sencilla para organizar pedidos grupales. Se ingresa lo que cada persona quiere y el sistema suma automáticamente las cantidades, mostrando un resumen.</p>
+  </div>
+
+  <footer id="teamName">Dark Passenger</footer>
+
+  <script>
+    let personas = JSON.parse(localStorage.getItem("personas")) || [];
+    let productos = JSON.parse(localStorage.getItem("productos")) || [];
+    let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+    const toggleBtn = document.getElementById("toggleTheme");
+
+    function guardarDatos() {
+      localStorage.setItem("personas", JSON.stringify(personas));
+      localStorage.setItem("productos", JSON.stringify(productos));
+      localStorage.setItem("pedidos", JSON.stringify(pedidos));
+    }
+
+    function agregarPersona() {
+      const nombre = document.getElementById("nombrePersona").value.trim();
+      if (nombre && !personas.includes(nombre)) {
+        personas.push(nombre);
+        guardarDatos();
+        actualizarPedidos();
+      }
+      document.getElementById("nombrePersona").value = "";
+    }
+
+    function agregarProducto() {
+      const producto = document.getElementById("nombreProducto").value.trim();
+      if (producto && !productos.includes(producto)) {
+        productos.push(producto);
+        guardarDatos();
+        actualizarPedidos();
+      }
+      document.getElementById("nombreProducto").value = "";
+    }
+
+    function actualizarPedidos() {
+      const div = document.getElementById("pedidos");
+      div.innerHTML = "";
+      if (personas.length === 0) {
+        div.innerHTML = "<p style='font-size:13px; opacity:0.7; text-align:center;'>No hay personas agregadas.</p>";
+      }
+      personas.forEach(persona => {
+        const select = `<select id="prod_${persona}">
+          <option value="">-- Seleccionar producto --</option>
+          ${productos.map(p => `<option value="${p}">${p}</option>`).join("")}
+        </select>`;
+        const btn = `<button class="asignar-pedido" onclick="asignarProducto('${persona}')">Agregar</button>`;
+        const eliminarPersonaBtn = `<button class="delete-persona" onclick="eliminarPersona('${persona}')">🗑️ Eliminar Persona</button>`;
+        div.innerHTML += `<div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px dashed rgba(128,128,128,0.3);"><strong>${persona}</strong><br>${select}${btn}${eliminarPersonaBtn}<div id="lista_${persona}"></div></div>`;
+        renderPedidosPersona(persona);
+      });
+      mostrarResumen();
+    }
+
+    function asignarProducto(persona) {
+      const producto = document.getElementById("prod_" + persona).value;
+      if (!producto) return;
+      const pedidoExistente = pedidos.find(p => p.persona === persona && p.producto === producto);
+      if (!pedidoExistente) {
+        pedidos.push({ persona, producto, cantidad: 1 });
+      } else {
+        pedidoExistente.cantidad += 1;
+      }
+      guardarDatos();
+      renderPedidosPersona(persona);
+      mostrarResumen();
+    }
+
+    function renderPedidosPersona(persona) {
+      const contenedor = document.getElementById("lista_" + persona);
+      const itemsPersona = pedidos.filter(p => p.persona === persona);
+      if (itemsPersona.length === 0) {
+        contenedor.innerHTML = "<span style='font-size:12px; opacity:0.6;'>Sin pedidos aún</span>";
+        return;
+      }
+      contenedor.innerHTML = itemsPersona.map(p => `
+        <div class="pedido-item">
+          <span>${p.producto}</span>
+          <input type="number" min="1" value="${p.cantidad}" onchange="cambiarCantidad('${persona}','${p.producto}',this.value)">
+        </div>
+      `).join("");
+    }
+
+    function cambiarCantidad(persona, producto, nuevaCantidad) {
+      const pedido = pedidos.find(p => p.persona === persona && p.producto === producto);
+      if (pedido) {
+        pedido.cantidad = parseInt(nuevaCantidad) || 1;
+        guardarDatos();
+        renderPedidosPersona(persona);
+        mostrarResumen();
+      }
+    }
+
+    function eliminarPersona(persona) {
+      personas = personas.filter(p => p !== persona);
+      pedidos = pedidos.filter(p => p.persona !== persona);
+      guardarDatos();
+      actualizarPedidos();
+      mostrarResumen();
+    }
+
+    function mostrarResumen() {
+      let resumenTexto = "";
+
+      resumenTexto += "👤 <u>Total por persona:</u>\n";
+      let hayPersonasConPedidos = false;
+      personas.forEach(p => {
+        const pedidosPersona = pedidos.filter(x => x.persona === p);
+        if (pedidosPersona.length > 0) {
+          hayPersonasConPedidos = true;
+          resumenTexto += `• ${p}: ${pedidosPersona.map(x => `${x.cantidad} ${x.producto}`).join(", ")}\n`;
+        }
+      });
+      if (!hayPersonasConPedidos) resumenTexto += "<i>Ninguno</i>\n";
+
+      resumenTexto += `\n🛒 <u>Total por producto:</u>\n`;
+      let totalGeneral = 0;
+      let hayProductos = false;
+      productos.forEach(prod => {
+        const total = pedidos.filter(x => x.producto === prod)
+                           .reduce((sum, x) => sum + x.cantidad, 0);
+        if (total > 0) {
+          hayProductos = true;
+          resumenTexto += `• ${prod}: ${total}\n`;
+          totalGeneral += total;
+        }
+      });
+      if (!hayProductos) resumenTexto += "<i>Ninguno</i>\n";
+
+      if (totalGeneral > 0) {
+        resumenTexto += `\n🧮 <b>Total general:</b> ${totalGeneral}`;
+      }
+
+      document.getElementById("resumen").innerHTML = resumenTexto.replace(/\n/g, "<br>");
+    }
+
+    function copiarResumen() {
+      const resumenTexto = document.getElementById("resumen").innerText;
+      const resumenConCredito = resumenTexto + "\n\n✨ Hecho con: https://darkpassengerpy.github.io/tools/";
+      const temp = document.createElement("textarea");
+      temp.value = resumenConCredito;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+      alert("Resumen copiado ✅");
+    }
+
+    function borrarTodo() {
+      if (confirm("¿Estás seguro de borrar todos los datos?")) {
+        personas = [];
+        productos = [];
+        pedidos = [];
+        localStorage.removeItem("personas");
+        localStorage.removeItem("productos");
+        localStorage.removeItem("pedidos");
+        document.getElementById("nombrePersona").value = "";
+        document.getElementById("nombreProducto").value = "";
+        alert("Todos los datos fueron borrados ✅");
+        actualizarPedidos();
+      }
+    }
+
+    toggleBtn.onclick = () => {
+      document.body.classList.toggle("dark");
+      document.body.classList.toggle("light");
+      const esDark = document.body.classList.contains("dark");
+      toggleBtn.textContent = esDark ? "🌞 Tema Claro" : "🌙 Tema Oscuro";
+      localStorage.setItem("temaCalculo", esDark ? "dark" : "light");
+    };
+
+    const temaGuardado = localStorage.getItem("temaCalculo");
+    if (temaGuardado) {
+      document.body.classList.remove("light","dark");
+      document.body.classList.add(temaGuardado);
+      toggleBtn.textContent = temaGuardado === "dark" ? "🌞 Tema Claro" : "🌙 Tema Oscuro";
+    }
+
+    actualizarPedidos();
+  </script>
+</body>
+</html>
