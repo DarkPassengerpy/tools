@@ -6,76 +6,226 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 10px; font-size: 18px;
+      font-family: "Aptos", Arial, sans-serif;
+      margin: 0; 
+      padding: 20px;
       transition: background 0.3s, color 0.3s;
     }
-    header { text-align: center; margin-bottom: 15px; }
-    h1 { font-size: 22px; margin: 0; }
-    #contador { font-weight: bold; font-size: 18px; margin-top: 6px; }
-    input, button {
-      width: 100%; padding: 12px; margin: 6px 0;
-      font-size: 18px; border-radius: 8px; box-sizing: border-box;
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-sizing: border-box;
+      text-align: center;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
     }
-    ul { list-style: none; padding: 0; }
+
+    header { 
+      text-align: center; 
+      margin-bottom: 15px; 
+    }
+
+    h1 { 
+      font-size: 22px; 
+      margin: 0 0 8px 0; 
+    }
+
+    #contador { 
+      font-weight: bold; 
+      font-size: 14px; 
+      margin-bottom: 10px; 
+    }
+
+    input[type="text"] {
+      font-family: "Aptos", Arial, sans-serif;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 14px;
+      outline: none;
+      transition: background 0.3s, border 0.3s, color 0.3s;
+    }
+
+    button {
+      font-family: "Aptos", Arial, sans-serif;
+      background: #1976d2; 
+      border: none; 
+      cursor: pointer;
+      font-size: 14px; 
+      color: white; 
+      width: 100%;
+      height: 38px; 
+      border-radius: 6px; 
+      padding: 0;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center; 
+      justify-content: center; 
+      margin: 6px 0;
+      transition: 0.3s;
+    }
+    button:hover { background: #0d47a1; }
+
+    #btnLimpiar {
+      background: #d32f2f;
+    }
+    #btnLimpiar:hover { background: #b71c1c; }
+
+    #btnCopiar {
+      background: #25d366;
+      color: #fff;
+      font-weight: bold;
+    }
+    #btnCopiar:hover { background: #128c7e; }
+
+    #toggleTheme {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 12px;
+      height: auto;
+      margin-top: 5px;
+    }
+
+    ul { 
+      list-style: none; 
+      padding: 0; 
+      margin-top: 15px; 
+      text-align: left; 
+    }
+
     li {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px; margin-bottom: 8px; border-radius: 8px;
+      display: flex; 
+      align-items: center; 
+      gap: 10px;
+      padding: 10px 12px; 
+      margin-bottom: 8px; 
+      border-radius: 6px;
+      font-size: 13px;
+      transition: background 0.3s, border 0.3s, color 0.3s;
     }
-    input[type=checkbox] { width: 26px; height: 26px; }
-    li span { flex: 1; }
+
+    input[type=checkbox] { 
+      width: 20px; 
+      height: 20px; 
+      cursor: pointer;
+      accent-color: #1976d2;
+    }
+
+    li span { flex: 1; word-break: break-word; }
     .checked span { text-decoration: line-through; color: #888; }
 
     .delete-btn {
-      width: 32px; height: 32px;
-      background: #f44336; color: white;
-      border: none; border-radius: 6px;
-      cursor: pointer; font-size: 20px;
-      display: flex; align-items: center; justify-content: center;
-      padding: 0; line-height: 1;
+      width: 28px; 
+      height: 28px;
+      background: #f44336; 
+      color: white;
+      border: none; 
+      border-radius: 4px;
+      cursor: pointer; 
+      font-size: 14px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      padding: 0; 
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .delete-btn:hover { background: #d32f2f; }
+
+    /* --- TEMA CLARO (Por defecto) --- */
+    body.light {
+      background: #f5f5f5;
+      color: #333;
+    }
+    body.light .container {
+      background: #ffffff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      color: #333;
+    }
+    body.light h1 {
+      color: #1976d2;
+    }
+    body.light input[type="text"] {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      color: #333;
+    }
+    body.light li {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      color: #333;
+    }
+    body.light #toggleTheme {
+      background: #e0e0e0;
+      color: #333;
+    }
+    body.light #toggleTheme:hover {
+      background: #d0d0d0;
     }
 
-    body.light { background: #f5f5f5; color: #333; }
-    body.light h1 { color: #2c3e50; }
-    body.light input, body.light button, body.light li {
-      background: #ffffff; border: 1px solid #ccc; color: #333;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    /* --- TEMA OSCURO --- */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
     }
-    body.light button { background: #1976d2; color: white; border: none; }
-
-    body.dark { background: #121212; color: #e0e0e0; }
-    body.dark h1 { color: #ffffff; }
-    body.dark input, body.dark button, body.dark li {
-      background: #1e1e1e; border: 1px solid #333; color: #e0e0e0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    body.dark .container {
+      background: #262626;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      color: #e0e0e0;
     }
-    body.dark button { background: #1976d2; color: white; border: none; }
-    body.dark .delete-btn { background: #d32f2f; }
+    body.dark h1 {
+      color: #ff5252;
+    }
+    body.dark input[type="text"] {
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #fff;
+    }
+    body.dark li {
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #e0e0e0;
+    }
+    body.dark #toggleTheme {
+      background: #333;
+      color: #fff;
+    }
+    body.dark #toggleTheme:hover {
+      background: #444;
+    }
 
     footer#teamName {
       text-align: center;
       margin-top: 30px;
-      font-family: "Courier New", monospace; /* tipografía distinta */
+      font-family: "Courier New", monospace;
       font-size: 20px;
       font-weight: bold;
-      color: #6a1b9a; /* morado elegante */
+      color: #6a1b9a;
       letter-spacing: 2px;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.8);
     }
   </style>
 </head>
 <body class="light">
-  <header>
-    <h1>🛒 Mi Lista de Compras</h1>
-    <div id="contador">Pendientes: 0/0</div>
-    <button id="toggleTheme">🌙 Tema Oscuro</button>
-  </header>
+  <div class="container">
+    <header>
+      <h1>🛒 Mi Lista de Compras</h1>
+      <div id="contador">Pendientes: 0/0</div>
+      <button id="toggleTheme">🌙 Tema Oscuro</button>
+    </header>
 
-  <input type="text" id="nuevoProducto" placeholder="Escribe un producto">
-  <button id="btnAgregar">Agregar</button>
-  <button id="btnLimpiar">Limpiar lista</button>
-  <button id="btnCopiar">📋 Copiar lista</button>
+    <input type="text" id="nuevoProducto" placeholder="Escribe un producto">
+    <button id="btnAgregar">Agregar</button>
+    <button id="btnLimpiar">Limpiar lista</button>
+    <button id="btnCopiar">📋 Copiar lista</button>
 
-  <ul id="lista"></ul>
+    <ul id="lista"></ul>
+  </div>
 
   <footer id="teamName">Dark Passenger</footer>
 
@@ -152,14 +302,14 @@
       const marcados = document.querySelectorAll("input[type=checkbox]:checked").length;
       const pendientes = total - marcados;
       contador.textContent = `Pendientes: ${pendientes} / ${total}`;
-      contador.style.color = pendientes === 0 ? "#4caf50" : "#f44336";
+      contador.style.color = pendientes === 0 ? "#2e7d32" : "#d32f2f";
     }
 
     function copiarTexto() {
       let contenido = "🛒 Mi Lista de Compras\n\n";
       document.querySelectorAll("ul li").forEach(li => {
         const texto = li.querySelector("span").textContent;
-        contenido += `🔹 ${texto}\n`;  // siempre usa la misma viñeta
+        contenido += `🔹 ${texto}\n`;
       });
       contenido += "\n✨ Hecho con: https://darkpassengerpy.github.io/tools/";
       navigator.clipboard.writeText(contenido).then(() => {
@@ -174,19 +324,16 @@
     toggleBtn.onclick = () => {
       document.body.classList.toggle("dark");
       document.body.classList.toggle("light");
-      toggleBtn.textContent = document.body.classList.contains("dark") 
-        ? "🌞 Tema Claro" 
-        : "🌙 Tema Oscuro";
-      localStorage.setItem("temaLista", document.body.classList.contains("dark") ? "dark" : "light");
+      const esDark = document.body.classList.contains("dark");
+      toggleBtn.textContent = esDark ? "🌞 Tema Claro" : "🌙 Tema Oscuro";
+      localStorage.setItem("temaLista", esDark ? "dark" : "light");
     };
 
     const temaGuardado = localStorage.getItem("temaLista");
     if (temaGuardado) {
       document.body.classList.remove("light","dark");
       document.body.classList.add(temaGuardado);
-      toggleBtn.textContent = temaGuardado === "dark" 
-        ? "🌞 Tema Claro" 
-        : "🌙 Tema Oscuro";
+      toggleBtn.textContent = temaGuardado === "dark" ? "🌞 Tema Claro" : "🌙 Tema Oscuro";
     }
 
     cargarEstado();
