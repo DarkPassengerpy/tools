@@ -164,15 +164,20 @@
       color: #ccc;
     }
 
-    footer#teamName {
-      text-align: center;
-      margin-top: 30px;
-      font-family: "Courier New", monospace;
-      font-size: 20px;
-      font-weight: bold;
-      color: #6a1b9a;
-      letter-spacing: 2px;
-      text-shadow: 0 1px 3px rgba(255,255,255,0.8);
+    footer#teamName { 
+      text-align: center; 
+      margin-top: 30px; 
+      font-family: "Aptos", Arial, sans-serif; 
+      font-size: 15px; 
+      font-weight: normal; 
+      color: #aaa; 
+    }
+    footer#teamName a {
+      color: #81c784;
+      text-decoration: none;
+    }
+    footer#teamName a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -207,7 +212,9 @@
     <p>Es una herramienta web Divisor de Gastos diseñada para simplificar y automatizar el reparto de dinero entre grupos (amigos, familia o compañeros) cuando realizan actividades o viajes con gastos compartidos.</p>
   </div>
 
-  <footer id="teamName">Dark Passenger</footer>
+  <footer id="teamName">
+    <a href="https://darkpassengerpy.github.io/tools/" target="_blank">Desarrollado por Dark Passenger Tools</a>
+  </footer>
 
   <script>
     let personas = [];
