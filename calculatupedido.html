@@ -197,12 +197,17 @@
     footer#teamName { 
       text-align: center; 
       margin-top: 30px; 
-      font-family: "Courier New", monospace; 
-      font-size: 20px; 
-      font-weight: bold; 
-      color: #6a1b9a; 
-      letter-spacing: 2px;
-      text-shadow: 0 1px 3px rgba(255,255,255,0.8);
+      font-family: "Aptos", Arial, sans-serif; 
+      font-size: 15px; 
+      font-weight: normal; 
+      color: #aaa; 
+    }
+    footer#teamName a {
+      color: #81c784;
+      text-decoration: none;
+    }
+    footer#teamName a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -249,7 +254,9 @@
     <p style="margin: 5px 0 0 0; font-size: 13px; opacity: 0.9;">"Calculá tu pedido" es una herramienta sencilla para organizar pedidos grupales. Se ingresa lo que cada persona quiere y el sistema suma automáticamente las cantidades, mostrando un resumen.</p>
   </div>
 
-  <footer id="teamName">Dark Passenger</footer>
+  <footer id="teamName">
+    <a href="https://darkpassengerpy.github.io/tools/" target="_blank">Desarrollado por Dark Passenger Tools</a>
+  </footer>
 
   <script>
     let personas = JSON.parse(localStorage.getItem("personas")) || [];
@@ -368,7 +375,7 @@
       let hayProductos = false;
       productos.forEach(prod => {
         const total = pedidos.filter(x => x.producto === prod)
-                           .reduce((sum, x) => sum + x.cantidad, 0);
+                             .reduce((sum, x) => sum + x.cantidad, 0);
         if (total > 0) {
           hayProductos = true;
           resumenTexto += `• ${prod}: ${total}\n`;
