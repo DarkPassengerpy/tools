@@ -48,6 +48,8 @@
             background-color: #2d2d2d;
             color: #ffffff;
             font-size: 15px;
+            min-width: 0;
+            box-sizing: border-box;
         }
 
         input[type="text"]:focus {
@@ -68,6 +70,7 @@
         .btn-add {
             background-color: #007bff;
             color: white;
+            flex-shrink: 0;
         }
 
         .btn-add:hover {
@@ -181,6 +184,71 @@
         .btn-delete:hover {
             color: #c82333;
             transform: scale(1.2);
+        }
+
+        .btn-edit {
+            background: none;
+            border: none;
+            color: #ffc107;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .btn-edit:hover {
+            color: #ffda6a;
+            transform: scale(1.2);
+        }
+
+        .btn-save {
+            background: none;
+            border: none;
+            color: #28a745;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .btn-save:hover {
+            color: #34c759;
+            transform: scale(1.2);
+        }
+
+        .btn-cancel {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .btn-cancel:hover {
+            color: #c82333;
+            transform: scale(1.2);
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            background-color: #2d2d2d;
+            color: #ffffff;
+            font-size: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            border-color: #5cadff;
         }
 
         .section-title {
@@ -348,6 +416,18 @@
         .hidden {
             display: none !important;
         }
+
+        /* Responsive: en pantallas angostas (celular), el input y el
+           botón "Agregar" (display:flex en .input-group) se apilan
+           uno debajo del otro en vez de quedar apretados lado a lado */
+        @media (max-width: 480px) {
+            .input-group {
+                flex-direction: column;
+            }
+            .btn-add {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -401,6 +481,7 @@
 
 <script>
     let tasks = [];
+    let editingTaskId = null;
 
     function formatDate(dateString) {
         if (!dateString) return "Fecha desconocida";
@@ -502,6 +583,44 @@
         saveAndRender();
     }
 
+    function startEdit(id) {
+        editingTaskId = id;
+        renderTasks();
+        setTimeout(() => {
+            const input = document.getElementById('editInput_' + id);
+            if (input) {
+                input.focus();
+                input.select();
+            }
+        }, 0);
+    }
+
+    function cancelEdit() {
+        editingTaskId = null;
+        renderTasks();
+    }
+
+    function saveEdit(id) {
+        const input = document.getElementById('editInput_' + id);
+        if (!input) return;
+        const newText = input.value.trim();
+        if (newText === '') return;
+        const task = tasks.find(t => t.id === id);
+        if (task) {
+            task.text = newText;
+        }
+        editingTaskId = null;
+        saveAndRender();
+    }
+
+    function handleEditKeyPress(e, id) {
+        if (e.key === 'Enter') {
+            saveEdit(id);
+        } else if (e.key === 'Escape') {
+            cancelEdit();
+        }
+    }
+
     function saveAndRender() {
         saveTasks();
         renderTasks();
@@ -510,7 +629,25 @@
     function buildTaskElement(task) {
         const li = document.createElement('li');
         li.className = `task-item ${task.completed ? 'completed' : ''} ${task.priority && !task.completed ? 'is-priority' : ''}`;
-        
+
+        if (editingTaskId === task.id) {
+            // Modo edición: input de texto + botones guardar/cancelar
+            li.innerHTML = `
+                <div class="task-content" style="width: 100%;">
+                    <input type="text" 
+                           id="editInput_${task.id}" 
+                           class="edit-input" 
+                           value="${task.text.replace(/"/g, '&quot;')}"
+                           onkeydown="handleEditKeyPress(event, '${task.id}')">
+                </div>
+                <div class="task-actions">
+                    <button class="btn-save" onclick="saveEdit('${task.id}')" title="Guardar">&#10003;</button>
+                    <button class="btn-cancel" onclick="cancelEdit()" title="Cancelar">&times;</button>
+                </div>
+            `;
+            return li;
+        }
+
         li.innerHTML = `
             <input type="checkbox" class="task-checkbox" 
                    ${task.completed ? 'checked' : ''} 
@@ -530,6 +667,7 @@
                         title="${task.priority ? 'Quitar prioridad' : 'Marcar como urgente/prioritaria'}">
                     ${task.priority ? '❗' : '❕'}
                 </button>
+                <button class="btn-edit" onclick="startEdit('${task.id}')" title="Editar">&#9998;</button>
                 <button class="btn-delete" onclick="deleteTask('${task.id}')" title="Eliminar">&times;</button>
             </div>
         `;
