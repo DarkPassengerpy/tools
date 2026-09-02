@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cobranza</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="ico.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: "Aptos", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      font-size: 15px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-sizing: border-box;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0 0 8px 0;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 16px;
+      border-bottom: 1px solid;
+      padding-bottom: 5px;
+    }
+
+    .bloque {
+      max-width: 500px;
+      width: 100%;
+      margin: 15px auto;
+      padding: 16px;
+      border-radius: 10px;
+      box-sizing: border-box;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s;
+    }
+
+    input, select {
+      font-family: "Aptos", Arial, sans-serif;
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      font-size: 14px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      outline: none;
+      transition: background 0.3s, border 0.3s, color 0.3s;
+    }
+
+    button {
+      font-family: "Aptos", Arial, sans-serif;
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      font-size: 14px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      cursor: pointer;
+      border: none;
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    .btn-principal {
+      background: #1976d2;
+    }
+    .btn-principal:hover {
+      background: #0d47a1;
+    }
+
+    .btn-copiar {
+      background: #35BADB;
+      font-weight: bold;
+    }
+    .btn-copiar:hover {
+      background: #279cbb;
+    }
+
+    .btn-borrar {
+      background: #d32f2f;
+      font-weight: bold;
+      width: auto;
+      padding: 10px 20px;
+      display: block;
+      margin: 20px auto;
+    }
+    .btn-borrar:hover {
+      background: #b71c1c;
+    }
+
+    #toggleTheme {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 12px;
+      height: auto;
+      margin-top: 5px;
+      color: inherit;
+    }
+
+    .hint {
+      font-size: 12px;
+      text-align: center;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* --- Tarjeta de factura --- */
+    #invoice {
+      border-radius: 10px;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s, border 0.3s;
+    }
+    .inv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .inv-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .inv-header span {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .badge-pendiente {
+      background: #3a1414;
+      color: #f87171;
+    }
+    .badge-pagado {
+      background: #10301c;
+      color: #4ade80;
+    }
+    .inv-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid;
+      font-size: 13px;
+    }
+    .inv-row .label {
+      opacity: 0.7;
+    }
+    .inv-row .value {
+      font-weight: 600;
+      text-align: right;
+    }
+    .inv-row-tight {
+      justify-content: flex-start;
+      gap: 6px;
+    }
+    .inv-row-tight .label {
+      flex: none;
+    }
+    .inv-row-tight .value {
+      text-align: left;
+    }
+    .inv-total {
+      margin-top: 16px;
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .inv-total .label {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    .inv-total .value {
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .monto-pendiente {
+      color: #f87171;
+    }
+    .monto-pagado {
+      color: #4ade80;
+    }
+
+    /* --- TEMA CLARO --- */
+    body.light {
+      background: #f5f5f5;
+      color: #333;
+    }
+    body.light h1 {
+      color: #1976d2;
+    }
+    body.light .bloque,
+    body.light .container {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      color: #333;
+    }
+    body.light .bloque h2 {
+      color: #1976d2;
+      border-bottom-color: #eee;
+    }
+    body.light input,
+    body.light select {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      color: #333;
+    }
+    body.light #toggleTheme {
+      background: #e0e0e0;
+      color: #333;
+    }
+    body.light #toggleTheme:hover {
+      background: #d0d0d0;
+    }
+    body.light #invoice {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+    }
+    body.light .inv-row {
+      border-bottom-color: #eee;
+    }
+    body.light .inv-total {
+      background: #f0f0f0;
+    }
+
+    /* --- TEMA OSCURO --- */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+    body.dark h1 {
+      color: #ff5252;
+    }
+    body.dark .bloque,
+    body.dark .container {
+      background: #262626;
+      border: 1px solid #444;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      color: #e0e0e0;
+    }
+    body.dark .bloque h2 {
+      color: #81c784;
+      border-bottom-color: #444;
+    }
+    body.dark input,
+    body.dark select {
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #fff;
+    }
+    body.dark #toggleTheme {
+      background: #333;
+      color: #fff;
+    }
+    body.dark #toggleTheme:hover {
+      background: #444;
+    }
+    body.dark #invoice {
+      background: #1e1e1e;
+      border: 1px solid #444;
+    }
+    body.dark .inv-row {
+      border-bottom-color: #333;
+    }
+    body.dark .inv-total {
+      background: #161616;
+    }
+
+    footer#teamName {
+      text-align: center;
+      margin-top: 30px;
+      font-family: "Aptos", Arial, sans-serif;
+      font-size: 15px;
+      font-weight: normal;
+      color: #aaa;
+    }
+    footer#teamName a {
+      color: #81c784;
+      text-decoration: none;
+    }
+    footer#teamName a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="dark">
+
+  <header>
+    <h1>🧾 Cobranza</h1>
+    <button id="toggleTheme">🌞 Tema Claro</button>
+  </header>
+
+  <div class="bloque">
+    <h2>📌 Tipo de documento</h2>
+    <select id="tipoDoc" onchange="actualizarPreview()">
+      <option value="factura">Factura</option>
+      <option value="recibo">Recibo</option>
+    </select>
+  </div>
+
+  <div class="bloque">
+    <h2>📌 Datos de la factura</h2>
+    <input type="text" id="empresa" placeholder="Empresa" oninput="actualizarPreview()">
+    <input type="text" id="cliente" placeholder="Cliente" oninput="actualizarPreview()">
+    <input type="text" id="servicio" placeholder="Nombre del servicio" oninput="actualizarPreview()">
+    <input type="date" id="fecha" oninput="actualizarPreview()">
+    <input type="number" id="monto" placeholder="Monto pendiente" step="0.01" oninput="actualizarPreview()">
+  </div>
+
+  <div class="bloque">
+    <h2>🧾 Vista previa</h2>
+    <div id="invoice">
+      <div class="inv-header">
+        <div>
+          <h3 id="prevTitulo">FACTURA</h3>
+        </div>
+        <div class="badge badge-pendiente" id="prevBadge">PENDIENTE</div>
+      </div>
+      <div class="inv-row inv-row-tight">
+        <div class="label">Cliente:</div>
+        <div class="value" id="prevCliente">—</div>
+      </div>
+      <div class="inv-row inv-row-tight">
+        <div class="label">Servicio:</div>
+        <div class="value" id="prevServicio">—</div>
+      </div>
+      <div class="inv-row inv-row-tight">
+        <div class="label" id="prevFechaLabel">Fecha de Facturación:</div>
+        <div class="value" id="prevFecha">—</div>
+      </div>
+      <div class="inv-total">
+        <div class="label" id="prevMontoLabel">Monto pendiente</div>
+        <div class="value" id="prevMonto">—</div>
+      </div>
+    </div>
+
+    <button class="btn-copiar" onclick="compartirImagen()">📲 Compartir</button>
+    <button class="btn-principal" onclick="descargarImagen()">📥 Descargar imagen</button>
+    <div class="hint">En celular se abre el panel de compartir del sistema. En PC se descarga la imagen.</div>
+  </div>
+
+  <button class="btn-borrar" onclick="borrarTodo()">🗑️ Borrar datos</button>
+
+  <div class="bloque">
+    <h2>ℹ️ ¿Qué es "Cobranza"?</h2>
+    <p style="margin: 5px 0 0 0; font-size: 13px; opacity: 0.9;">Cargá empresa, cliente, servicio, fecha y monto, y generá una imagen de Factura o Recibo lista para compartir por WhatsApp.</p>
+  </div>
+
+  <footer id="teamName">
+    <a href="https://darkpassengerpy.github.io/tools/" target="_blank">Desarrollado por Dark Passenger Tools</a>
+  </footer>
+
+  <script>
+    const tipoDoc = document.getElementById("tipoDoc");
+    const empresa = document.getElementById("empresa");
+    const cliente = document.getElementById("cliente");
+    const servicio = document.getElementById("servicio");
+    const fecha = document.getElementById("fecha");
+    const monto = document.getElementById("monto");
+    const toggleBtn = document.getElementById("toggleTheme");
+
+    const CLAVE_STORAGE = "datosGeneradorFactura";
+
+    function cargarDatos() {
+      const guardado = JSON.parse(localStorage.getItem(CLAVE_STORAGE)) || {};
+      tipoDoc.value = guardado.tipoDoc || "factura";
+      empresa.value = guardado.empresa || "";
+      cliente.value = guardado.cliente || "";
+      servicio.value = guardado.servicio || "";
+      fecha.value = guardado.fecha || "";
+      monto.value = guardado.monto || "";
+    }
+
+    function guardarDatos() {
+      localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+        tipoDoc: tipoDoc.value,
+        empresa: empresa.value,
+        cliente: cliente.value,
+        servicio: servicio.value,
+        fecha: fecha.value,
+        monto: monto.value
+      }));
+    }
+
+    function formatearMonto(v) {
+      if (v === "" || v === null || isNaN(v)) return "—";
+      return "Gs. " + Number(v).toLocaleString("es-PY");
+    }
+
+    function formatearFecha(str) {
+      if (!str) return "—";
+      const [y, m, d] = str.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function actualizarPreview() {
+      document.getElementById("prevCliente").textContent = cliente.value || "—";
+      document.getElementById("prevServicio").textContent = servicio.value || "—";
+      document.getElementById("prevFecha").textContent = formatearFecha(fecha.value);
+      document.getElementById("prevMonto").textContent = formatearMonto(monto.value);
+
+      const esRecibo = tipoDoc.value === "recibo";
+      const tituloBase = esRecibo ? "RECIBO" : "FACTURA";
+      const tituloFinal = empresa.value ? `${tituloBase} - (${empresa.value})` : tituloBase;
+      document.getElementById("prevTitulo").textContent = tituloFinal;
+      document.getElementById("prevFechaLabel").textContent = esRecibo ? "Fecha de Recibo:" : "Fecha de Facturación:";
+
+      const badge = document.getElementById("prevBadge");
+      const montoLabel = document.getElementById("prevMontoLabel");
+      const montoValue = document.getElementById("prevMonto");
+      if (esRecibo) {
+        badge.textContent = "PAGADO";
+        badge.className = "badge badge-pagado";
+        montoLabel.textContent = "Monto pagado";
+        montoValue.className = "value monto-pagado";
+      } else {
+        badge.textContent = "PENDIENTE";
+        badge.className = "badge badge-pendiente";
+        montoLabel.textContent = "Monto pendiente";
+        montoValue.className = "value monto-pendiente";
+      }
+
+      guardarDatos();
+    }
+
+    function generarTexto() {
+      const nombre = cliente.value || "cliente";
+      const link = "https://darkpassengerpy.github.io/mytools/cobranza.html";
+
+      if (tipoDoc.value === "recibo") {
+        return `Hola ${nombre}, te dejo una copia de tu recibo.\n\nEste mensaje se envió a través de ${link}`;
+      }
+
+      return `Hola ${nombre},\n\nLe informamos que se ha generado una nueva factura a su nombre. Nada mejor que llevar tus cuentas al día, por eso no olvides realizar el pago. ¡Que tengas un feliz día!\n\nEste mensaje se envió a través de ${link}`;
+    }
+
+    function generarCanvas() {
+      const nodo = document.getElementById("invoice");
+      const fondo = document.body.classList.contains("dark") ? "#1e1e1e" : "#f9f9f9";
+      return html2canvas(nodo, { scale: 3, backgroundColor: fondo });
+    }
+
+    function descargarImagen() {
+      generarCanvas().then(canvas => {
+        const link = document.createElement("a");
+        const nombreCliente = (cliente.value || "cliente").replace(/\s+/g, "_");
+        const prefijo = tipoDoc.value === "recibo" ? "recibo" : "factura";
+        link.download = `${prefijo}_${nombreCliente}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+
+    function compartirImagen() {
+      generarCanvas().then(canvas => {
+        canvas.toBlob(async (blob) => {
+          const nombreCliente = (cliente.value || "cliente").replace(/\s+/g, "_");
+          const prefijo = tipoDoc.value === "recibo" ? "recibo" : "factura";
+          const archivo = new File([blob], `${prefijo}_${nombreCliente}.png`, { type: "image/png" });
+          const texto = generarTexto();
+
+          if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+            try {
+              await navigator.share({ files: [archivo], text: texto });
+            } catch (err) {
+              // usuario canceló, no hacer nada
+            }
+          } else {
+            alert("Tu navegador no soporta compartir imágenes directamente. Se descargará la imagen para adjuntarla manualmente.");
+            const link = document.createElement("a");
+            link.download = `${prefijo}_${nombreCliente}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+          }
+        }, "image/png");
+      });
+    }
+
+    function borrarTodo() {
+      if (confirm("¿Estás seguro de borrar todos los datos?")) {
+        localStorage.removeItem(CLAVE_STORAGE);
+        tipoDoc.value = "factura";
+        empresa.value = "";
+        cliente.value = "";
+        servicio.value = "";
+        fecha.value = "";
+        monto.value = "";
+        actualizarPreview();
+        alert("Todos los datos fueron borrados ✅");
+      }
+    }
+
+    // --- Tema claro/oscuro (patrón fijo) ---
+    const CLAVE_TEMA = "temaGeneradorFactura";
+
+    toggleBtn.onclick = () => {
+      document.body.classList.toggle("dark");
+      document.body.classList.toggle("light");
+      const esDark = document.body.classList.contains("dark");
+      toggleBtn.textContent = esDark ? "🌞 Tema Claro" : "🌙 Tema Oscuro";
+      localStorage.setItem(CLAVE_TEMA, esDark ? "dark" : "light");
+    };
+
+    const temaGuardado = localStorage.getItem(CLAVE_TEMA);
+    if (temaGuardado) {
+      document.body.classList.remove("light", "dark");
+      document.body.classList.add(temaGuardado);
+      toggleBtn.textContent = temaGuardado === "dark" ? "🌞 Tema Claro" : "🌙 Tema Oscuro";
+    }
+
+    // --- Inicialización ---
+    cargarDatos();
+    actualizarPreview();
+  </script>
+</body>
+</html>
