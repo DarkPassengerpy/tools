@@ -233,6 +233,25 @@
     let personas = [];
     let textoParaCompartir = "";
     let textoCompleto = "";
+    const STORAGE_KEY = "divisorGastos_personas";
+
+    function guardarDatos() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(personas));
+    }
+
+    function cargarDatos() {
+      const guardado = localStorage.getItem(STORAGE_KEY);
+      if (guardado) {
+        try {
+          personas = JSON.parse(guardado) || [];
+          mostrarLista();
+        } catch (e) {
+          personas = [];
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", cargarDatos);
 
     function agregarPersona() {
       const nombre = document.getElementById("nombre").value.trim();
@@ -241,6 +260,7 @@
       if (!nombre) return alert("Escribe un nombre");
 
       personas.push({ nombre, pago });
+      guardarDatos();
       mostrarLista();
       document.getElementById("nombre").value = "";
       document.getElementById("pago").value = "";
@@ -267,6 +287,7 @@
 
     function eliminarPersona(index) {
       personas.splice(index, 1);
+      guardarDatos();
       mostrarLista();
       document.getElementById("resultados").innerHTML = "";
     }
@@ -530,6 +551,7 @@
 
     function limpiarTodo() {
       personas = [];
+      localStorage.removeItem(STORAGE_KEY);
       document.getElementById("lista").innerHTML = "";
       document.getElementById("resultados").innerHTML = "";
       document.getElementById("nombre").value = "";
