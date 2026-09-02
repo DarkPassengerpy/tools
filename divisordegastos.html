@@ -61,16 +61,18 @@
     }
     button:hover { background: #0d47a1; }
 
-    #btn-compartir {
-      background: #25d366;
+    #btn-compartir-img, #btn-compartir-txt {
       width: auto;
-      padding: 0 20px;
+      padding: 0 16px;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 14px;
       margin-bottom: 15px;
       color: #fff;
     }
-    #btn-compartir:hover { background: #128c7e; }
+    #btn-compartir-img { background: #25d366; }
+    #btn-compartir-img:hover { background: #128c7e; }
+    #btn-compartir-txt { background: #1976d2; }
+    #btn-compartir-txt:hover { background: #0d47a1; }
 
     .switch {
       position: relative; display: inline-block;
@@ -230,6 +232,7 @@
   <script>
     let personas = [];
     let textoParaCompartir = "";
+    let textoCompleto = "";
 
     function agregarPersona() {
       const nombre = document.getElementById("nombre").value.trim();
@@ -320,24 +323,65 @@
       
       resultados += crearResumenSaldos(transferencias, promedio);
 
-      // --- CONSTRUCCIÓN DEL TEXTO PARA COMPARTIR (se usa como texto acompañante) ---
+      // --- TEXTO CORTO usado como acompañante al compartir la imagen ---
       textoParaCompartir = `✨ Hecho con: https://darkpassengerpy.github.io/tools/`;
 
-      let botonCopiar = `<div style="text-align: center;"><button id="btn-compartir" onclick="compartirDatos()">Compartir 📋</button></div>`;
+      // --- TEXTO COMPLETO usado para la opción "Compartir como texto" ---
+      textoCompleto = `📊 *Divisor de Gastos*\n\n`;
+      textoCompleto += `💰 *Total gastado:* ${formatearNumero(total)}\n`;
+      textoCompleto += `🎯 *Cuota por persona:* ${formatearNumero(promedio)}\n\n`;
+
+      textoCompleto += `📝 *Cuanto puso cada uno al inicio:*\n`;
+      personas.forEach(p => {
+        textoCompleto += `👤 ${p.nombre}: ${formatearNumero(p.pago)}\n`;
+      });
+
+      textoCompleto += `\n💸 *Transferencias:*\n`;
+      if (transferencias.length > 0) {
+        transferencias.forEach(t => {
+          textoCompleto += `➡️ ${t.de} debe dar ${formatearNumero(t.monto)} a ${t.hacia}\n`;
+        });
+      } else {
+        textoCompleto += `✅ Todos aportaron lo mismo. Nadie debe nada.\n`;
+      }
+
+      textoCompleto += `\n*⚖️ Gasto detallado:*\n`;
+      personas.forEach(p => {
+        let saldoNeto = -p.pago;
+        let operacion = `-${formatearNumero(p.pago)}`;
+        transferencias.forEach(t => {
+          if (t.de === p.nombre) {
+            saldoNeto -= t.monto;
+            operacion += ` - ${formatearNumero(t.monto)}`;
+          } else if (t.hacia === p.nombre) {
+            saldoNeto += t.monto;
+            operacion += ` + ${formatearNumero(t.monto)}`;
+          }
+        });
+        textoCompleto += `👤 ${p.nombre}:\n  Desglose: ${operacion}\n  Gasto final: ${formatearNumero(saldoNeto)}\n\n`;
+      });
+
+      textoCompleto += `✨ Hecho con: https://darkpassengerpy.github.io/tools/`;
+
+      let botones = `<div style="text-align: center;">
+          <button id="btn-compartir-img" onclick="compartirComoImagen()">Compartir imagen 🖼️</button>
+          <button id="btn-compartir-txt" onclick="compartirComoTexto()">Compartir texto 📋</button>
+        </div>`;
       
-      document.getElementById("resultados").innerHTML = botonCopiar + resultados;
+      document.getElementById("resultados").innerHTML = botones + resultados;
     }
 
-    async function compartirDatos() {
-      const btn = document.getElementById("btn-compartir");
+    async function compartirComoImagen() {
+      const btn = document.getElementById("btn-compartir-img");
       const elemento = document.getElementById("resultados");
 
       const textoOriginal = btn.innerHTML;
       const colorOriginal = btn.style.background;
 
       try {
-        // Oculta el botón y agrega temporalmente la marca de agua para la captura
-        btn.style.visibility = "hidden";
+        // Oculta los botones y agrega temporalmente la marca de agua para la captura
+        const botonesDiv = elemento.querySelector("div");
+        botonesDiv.style.visibility = "hidden";
         const marca = document.createElement("div");
         marca.id = "marcaCaptura";
         marca.innerText = "✨ Hecho con: https://darkpassengerpy.github.io/tools/";
@@ -348,7 +392,7 @@
           scale: 2
         });
 
-        btn.style.visibility = "visible";
+        botonesDiv.style.visibility = "visible";
         marca.remove();
 
         canvas.toBlob(async (blob) => {
@@ -400,10 +444,44 @@
         }, "image/png");
 
       } catch (err) {
-        btn.style.visibility = "visible";
+        const botonesDiv = elemento.querySelector("div");
+        if (botonesDiv) botonesDiv.style.visibility = "visible";
         const marcaExistente = document.getElementById("marcaCaptura");
         if (marcaExistente) marcaExistente.remove();
         alert("Error al generar o compartir la imagen.");
+      }
+    }
+
+    async function compartirComoTexto() {
+      const btn = document.getElementById("btn-compartir-txt");
+      const textoOriginal = btn.innerHTML;
+      const colorOriginal = btn.style.background;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Divisor de Gastos",
+            text: textoCompleto
+          });
+          return;
+        } catch (err) {
+          if (err.name === "AbortError") return;
+        }
+      }
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textoCompleto).then(() => {
+          btn.innerHTML = "¡Copiado! ✅";
+          btn.style.background = "#1b5e20";
+          setTimeout(() => {
+            btn.innerHTML = textoOriginal;
+            btn.style.background = colorOriginal || "#1976d2";
+          }, 2000);
+        }).catch(() => {
+          alert("Error al copiar. Tu navegador podría estar bloqueándolo.");
+        });
+      } else {
+        alert("Tu navegador no soporta el copiado automático.");
       }
     }
 
