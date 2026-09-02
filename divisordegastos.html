@@ -179,6 +179,16 @@
     footer#teamName a:hover {
       text-decoration: underline;
     }
+
+    /* 🔹 Marca de agua que se agrega solo en la captura para compartir */
+    #marcaCaptura {
+      text-align: center;
+      font-size: 13px;
+      color: #81c784;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #444;
+    }
   </style>
 </head>
 <body>
@@ -216,6 +226,7 @@
     <a href="https://darkpassengerpy.github.io/tools/" target="_blank">Desarrollado por Dark Passenger Tools</a>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     let personas = [];
     let textoParaCompartir = "";
@@ -309,64 +320,90 @@
       
       resultados += crearResumenSaldos(transferencias, promedio);
 
-      // --- CONSTRUCCIÓN DEL TEXTO PARA COMPARTIR ---
-      textoParaCompartir = `📊 *Divisor de Gastos*\n\n`;
-      textoParaCompartir += `💰 *Total gastado:* ${formatearNumero(total)}\n`;
-      textoParaCompartir += `🎯 *Cuota por persona:* ${formatearNumero(promedio)}\n\n`;
-      
-      textoParaCompartir += `📝 *Cuanto puso cada uno al inicio:*\n`;
-      personas.forEach(p => {
-        textoParaCompartir += `👤 ${p.nombre}: ${formatearNumero(p.pago)}\n`;
-      });
-      
-      textoParaCompartir += `\n💸 *Transferencias:*\n`;
-      if (transferencias.length > 0) {
-        transferencias.forEach(t => {
-          textoParaCompartir += `➡️ ${t.de} debe dar ${formatearNumero(t.monto)} a ${t.hacia}\n`;
-        });
-      } else {
-        textoParaCompartir += `✅ Todos aportaron lo mismo. Nadie debe nada.\n`;
-      }
+      // --- CONSTRUCCIÓN DEL TEXTO PARA COMPARTIR (se usa como texto acompañante) ---
+      textoParaCompartir = `✨ Hecho con: https://darkpassengerpy.github.io/tools/`;
 
-      textoParaCompartir += `\n*⚖️ Gasto detallado:*\n`;
-      personas.forEach(p => {
-        let saldoNeto = -p.pago;
-        let operacion = `-${formatearNumero(p.pago)}`;
-        transferencias.forEach(t => {
-          if (t.de === p.nombre) {
-            saldoNeto -= t.monto;
-            operacion += ` - ${formatearNumero(t.monto)}`;
-          } else if (t.hacia === p.nombre) {
-            saldoNeto += t.monto;
-            operacion += ` + ${formatearNumero(t.monto)}`;
-          }
-        });
-        textoParaCompartir += `👤 ${p.nombre}:\n  Desglose: ${operacion}\n  Gasto final: ${formatearNumero(saldoNeto)}\n\n`;
-      });
-
-      textoParaCompartir += `✨ Hecho con: https://darkpassengerpy.github.io/tools/`;
-
-      let botonCopiar = `<div style="text-align: center;"><button id="btn-compartir" onclick="compartirDatos()">Copiar calculos 📋</button></div>`;
+      let botonCopiar = `<div style="text-align: center;"><button id="btn-compartir" onclick="compartirDatos()">Compartir 📋</button></div>`;
       
       document.getElementById("resultados").innerHTML = botonCopiar + resultados;
     }
 
-    function compartirDatos() {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(textoParaCompartir).then(() => {
-          const btn = document.getElementById("btn-compartir");
-          btn.innerHTML = "¡Copiado! ✅";
-          btn.style.background = "#1b5e20";
-          
-          setTimeout(() => {
-            btn.innerHTML = "Copiar calculos 📋";
-            btn.style.background = "#25d366";
-          }, 2000);
-        }).catch(err => {
-          alert("Error al copiar. Tu navegador podría estar bloqueándolo.");
+    async function compartirDatos() {
+      const btn = document.getElementById("btn-compartir");
+      const elemento = document.getElementById("resultados");
+
+      const textoOriginal = btn.innerHTML;
+      const colorOriginal = btn.style.background;
+
+      try {
+        // Oculta el botón y agrega temporalmente la marca de agua para la captura
+        btn.style.visibility = "hidden";
+        const marca = document.createElement("div");
+        marca.id = "marcaCaptura";
+        marca.innerText = "✨ Hecho con: https://darkpassengerpy.github.io/tools/";
+        elemento.appendChild(marca);
+
+        const canvas = await html2canvas(elemento, {
+          backgroundColor: "#1e1e1e",
+          scale: 2
         });
-      } else {
-        alert("Tu navegador no soporta el copiado automático.");
+
+        btn.style.visibility = "visible";
+        marca.remove();
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            alert("No se pudo generar la imagen.");
+            return;
+          }
+          const archivo = new File([blob], "divisor-gastos.png", { type: "image/png" });
+
+          if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+            try {
+              await navigator.share({
+                files: [archivo],
+                title: "Divisor de Gastos",
+                text: textoParaCompartir
+              });
+              return;
+            } catch (err) {
+              // Si el usuario cancela el share, no hacemos nada más
+              if (err.name === "AbortError") return;
+            }
+          }
+
+          // Fallback: copiar la imagen al portapapeles
+          if (navigator.clipboard && window.ClipboardItem) {
+            try {
+              await navigator.clipboard.write([
+                new ClipboardItem({ "image/png": blob })
+              ]);
+              btn.innerHTML = "¡Imagen copiada! ✅";
+              btn.style.background = "#1b5e20";
+              setTimeout(() => {
+                btn.innerHTML = textoOriginal;
+                btn.style.background = colorOriginal || "#25d366";
+              }, 2000);
+              return;
+            } catch (err) {
+              // sigue al último fallback
+            }
+          }
+
+          // Último fallback: descargar la imagen
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "divisor-gastos.png";
+          a.click();
+          URL.revokeObjectURL(url);
+        }, "image/png");
+
+      } catch (err) {
+        btn.style.visibility = "visible";
+        const marcaExistente = document.getElementById("marcaCaptura");
+        if (marcaExistente) marcaExistente.remove();
+        alert("Error al generar o compartir la imagen.");
       }
     }
 
